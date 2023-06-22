@@ -1,0 +1,185 @@
+const IMG_PAGAMENTO_SALDO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
+const IMG_CASHBACK = "https://static.wixstatic.com/media/88a711_d7f511ac9b884bbca345e15d9d1703fa~mv2.png";
+const IMG_PAGAMENTO_DINHEIRO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
+const IMG_PAGAMENTO_CARTAO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
+
+const TEXT_PAGAMENTO_SALDO = "Pagamento c/ saldo";
+const TEXT_CASHBACK = "Cashback";
+const TEXT_PAGAMENTO_DINHEIRO = "Pagamento em dinheiro";
+const TEXT_PAGAMENTO_CARTAO = "Pagamento em cartão";
+
+export const SECTION_STATE_LOADING="loading";	// loading
+export const SECTION_STATE_DATA="data";			// true for transactions
+export const SECTION_STATE_NO_DATA="no_data";	// empty (no transactions)
+
+// transaction history repeater: constant on utils to be used by 'Extrato' and 'Home' pages
+export let g_hist_map = [
+	{ui: "#textHistDate", db: "data", type: "text", format: utils_fmt_date},
+	{ui: "#imageHist", db: "tipo", type: "src", format: utils_fmt_history_img},
+	{ui: "#textHistValue", db: "db", type: "text", format: utils_fmt_money_with_prefix},
+	{ui: "#textHistDesc", db: "nome", type: "text"},
+	{ui: "#textHistPaymentType", db: "tipo", type: "text", format: utils_fmt_history_type}
+];
+
+
+// -------------- fmt functions --------------------
+export function utils_fmt_money_with_prefix(value) {
+	value = utils_fmt_money(value);
+	return "R$ " + (value || "0,00")
+}
+
+export function utils_fmt_money(val) { // receive in cents or in string in Locale
+	val = val ?? "";
+	let is_negative;
+
+	if (typeof(val) == "string")
+		is_negative = val[0] == '-';
+	else
+		is_negative = val < 0;
+
+    val = utils_fmt_strip_non_digits(val.toString());
+
+    if (val && val.length)
+        val = (parseInt(val)/100).toLocaleString(undefined, {minimumFractionDigits: 2});
+
+    return is_negative ? "-" + val : val;
+}
+
+export function utils_fmt_strip_non_digits(value) {
+	return value ? value.toString().replace(/\D/g,'') : "";
+}
+
+export function utils_fmt_date(date) {
+	if (!date)
+		return "";
+	date = new Date(date)
+	return date.toLocaleString().split(/[\s,]+/)[0];
+}
+
+export function utils_fmt_history_img(val) {
+    const history_img_map = {
+        "pagamento_saldo": IMG_PAGAMENTO_SALDO,
+        "cashback": IMG_CASHBACK,
+        "pagamento_dinheiro": IMG_PAGAMENTO_DINHEIRO,
+        "pagamento_cartao": IMG_PAGAMENTO_CARTAO,
+    };
+    return history_img_map[val] ?? "";
+}
+
+export function utils_fmt_history_type(val) {
+    const history_type_map = {
+        "pagamento_saldo": TEXT_PAGAMENTO_SALDO,
+        "cashback": TEXT_CASHBACK,
+        "pagamento_dinheiro": TEXT_PAGAMENTO_DINHEIRO,
+        "pagamento_cartao": TEXT_PAGAMENTO_CARTAO,
+    };
+    return history_type_map[val] ?? "";
+}
+
+
+// -------------- config functions --------------------
+export function utils_config_items($w, data) {
+	let config = g_hist_map;
+	for (let item of config) {
+		let k = item.ui;
+		let val = item.db ? data[item.db] : item.raw;
+		val = item.fmt_from_db ? item.fmt_from_db(val) : val;
+		
+		let type = item.type;
+		
+		// add mask as format function
+		if (item.mask) {
+			item.format = (value) => {
+				return apply_mask(item.mask, value);
+			}
+		} else if ($w(k).onInput) {
+			$w(k).maxLength = 200;
+		}
+
+		switch (type) {
+			case "download":
+			case "checkbox":
+			case "upload":
+			case "button":
+				break;
+			case "text":
+				val = val || "";
+				// falls through
+			default:
+				if (!val && item.hide_on_empty && $w(k).hide)
+					$w(k).hide();
+				else {
+					var new_val = item.format ? item.format(val) : val;
+					$w(k)[type] = type == "text" && new_val.toString ? new_val.toString() : new_val;
+				}
+				break;
+		}
+
+		if (item.label)
+			$w(k).label = item.label;
+
+		if (item.onChange)
+			$w(k).onChange( (event) => { item.onChange(event, val) });
+		
+		if (item.onClick)
+			$w(k).onClick( (event) => { item.onClick(event, val) });
+
+		if (item.format && $w(k).onInput) {
+			$w(k).onInput( (event) => {
+				if (event.target.value)
+					$w(k)[type] = item.format(event.target.value);
+			});
+		}
+	}
+}
+
+
+// -------------- actions functions --------------------
+export function utils_show_hide_section(show_list, hide_list) {
+    for (let item of hide_list) {
+        $w(item).hide && $w(item).hide();
+        $w(item).collapse && $w(item).collapse();
+    }
+    for (let item of show_list) {
+        $w(item).expand && $w(item).expand();
+        $w(item).show && $w(item).show();
+    }
+}
+
+
+// function on 'utils' to be used by 'Extrato' and 'Home' pages
+export function utils_set_sections_history(state) {
+    switch (state) {
+        case SECTION_STATE_LOADING:
+            return utils_show_hide_section(["#sectionLoading"], ["#sectionHistData, #sectionNoData"]);
+        case SECTION_STATE_DATA:
+            return utils_show_hide_section(["#sectionHistData"], ["#sectionLoading, #sectionNoData"]);
+		case SECTION_STATE_NO_DATA:
+			return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
+    }
+}
+
+
+// -------------- internal functions --------------------
+function apply_mask(mask, val) {
+	if (!val)
+		return val;
+
+	function trim_non_digit(res) {
+		for (var i = res.length - 1; i >= 0; i--) {
+			let char = res[i];
+			if (/^\d$/.test(char)) // if digit
+				break;
+		}
+		return res.slice(0, i+1);
+	}
+	
+	val = utils_fmt_strip_non_digits(val);
+	let res = mask;
+	for (let c of val.toString()) {
+		res = res.replace('#', c); // replace first occurence
+	}
+
+	res = res.replace(/#/g, '');
+	return trim_non_digit(res);
+}
