@@ -1,3 +1,5 @@
+import { be_mod_utils_get_history } from "backend/be_mod_utils";
+
 const IMG_PAGAMENTO_SALDO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
 const IMG_CASHBACK = "https://static.wixstatic.com/media/88a711_d7f511ac9b884bbca345e15d9d1703fa~mv2.png";
 const IMG_PAGAMENTO_DINHEIRO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
@@ -11,6 +13,8 @@ const TEXT_PAGAMENTO_CARTAO = "Pagamento em cartão";
 export const SECTION_STATE_LOADING="loading";	// loading
 export const SECTION_STATE_DATA="data";			// true for transactions
 export const SECTION_STATE_NO_DATA="no_data";	// empty (no transactions)
+
+const QTDE_ITENS_RESUMO = 2; // max number of transactions on resume
 
 // transaction history repeater: constant on utils to be used by 'Extrato' and 'Home' pages
 export let g_hist_map = [
@@ -78,8 +82,7 @@ export function utils_fmt_history_type(val) {
 
 
 // -------------- config functions --------------------
-export function utils_config_items($w, data) {
-	let config = g_hist_map;
+export function utils_config_items($w, config, data) {
 	for (let item of config) {
 		let k = item.ui;
 		let val = item.db ? data[item.db] : item.raw;
@@ -157,6 +160,23 @@ export function utils_set_sections_history(state) {
 		case SECTION_STATE_NO_DATA:
 			return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
     }
+}
+
+export async function utils_load_history(_is_resumed) {
+    $w("#repeaterHist").onItemReady( ($item, itemData, index) => {
+        utils_config_items($item, g_hist_map, itemData);
+        utils_set_sections_history(SECTION_STATE_DATA);
+    });
+    
+    let history = (await be_mod_utils_get_history()).reverse();
+
+	if(_is_resumed)
+    	history = history.length >= QTDE_ITENS_RESUMO ? history.slice(0 , QTDE_ITENS_RESUMO) : history; // limits items on resume
+
+    $w("#repeaterHist").data = history; 
+    
+    if (!history.length)
+        utils_set_sections_history(SECTION_STATE_NO_DATA);
 }
 
 
