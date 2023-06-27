@@ -3,6 +3,6 @@ import {
 } from 'backend/be_utils.js';
 
 
-export function be_mod_utils_get_history() {
-	return be_utils_get_history();
+export function be_mod_utils_get_history(_filter) {
+	return be_utils_get_history(_filter);
 }

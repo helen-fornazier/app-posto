@@ -19,7 +19,7 @@ async function fill_member_picture() {
 
 $w.onReady(function () {
     utils_set_sections_history(SECTION_STATE_LOADING);
-    utils_load_history(true);
+    utils_load_history(true, "");
 	fill_member_picture();
 
     // Escreva seu código JavaScript aqui usando o API de framework do Velo

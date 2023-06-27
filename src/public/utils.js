@@ -25,6 +25,8 @@ export let g_hist_map = [
 	{ui: "#textHistPaymentType", db: "tipo", type: "text", format: utils_fmt_history_type}
 ];
 
+export const hist_filters = {"date": "#dropdownFilterDate", "transaction": "#dropdownFilterTransaction"};
+
 
 // -------------- fmt functions --------------------
 export function utils_fmt_money_with_prefix(value) {
@@ -162,13 +164,13 @@ export function utils_set_sections_history(state) {
     }
 }
 
-export async function utils_load_history(_is_resumed) {
+export async function utils_load_history(_is_resumed, _filter) {
     $w("#repeaterHist").onItemReady( ($item, itemData, index) => {
         utils_config_items($item, g_hist_map, itemData);
         utils_set_sections_history(SECTION_STATE_DATA);
     });
     
-    let history = (await be_mod_utils_get_history()).reverse();
+    let history = (await be_mod_utils_get_history(_filter)).reverse();
 
 	if(_is_resumed)
     	history = history.length >= QTDE_ITENS_RESUMO ? history.slice(0 , QTDE_ITENS_RESUMO) : history; // limits items on resume
@@ -177,6 +179,17 @@ export async function utils_load_history(_is_resumed) {
     
     if (!history.length)
         utils_set_sections_history(SECTION_STATE_NO_DATA);
+}
+
+export function utils_get_filters_values(_map_filters) {
+	const keys = Object.keys(_map_filters)
+	const _filter = {}
+	
+	for (let item of keys){
+		_filter[item] = $w(_map_filters[item]).value
+	}
+
+	return _filter
 }
 
 
