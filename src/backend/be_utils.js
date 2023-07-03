@@ -14,7 +14,7 @@ const json_test = {
 const json_test2 = {
     "_id": "2",
     "data": "Thu Jun 22 2023 09:54:51 GMT-0300",
-    "tipo": "pagamento_cartao",
+    "tipo": "pagamento",
     "db": "242,50",
     "nome": "Posto Campestre"
 }
@@ -22,7 +22,7 @@ const json_test2 = {
 const json_test3 = {
     "_id": "3",
     "data": "Thu Jun 23 2023 09:54:51 GMT-0300",
-    "tipo": "pagamento_dinheiro",
+    "tipo": "pagamento",
     "db": "150,00",
     "nome": "Posto Caldas"
 }

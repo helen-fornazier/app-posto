@@ -2,13 +2,11 @@ import { be_mod_utils_get_history } from "backend/be_mod_utils";
 
 const IMG_PAGAMENTO_SALDO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
 const IMG_CASHBACK = "https://static.wixstatic.com/media/88a711_d7f511ac9b884bbca345e15d9d1703fa~mv2.png";
-const IMG_PAGAMENTO_DINHEIRO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
-const IMG_PAGAMENTO_CARTAO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
+const IMG_PAGAMENTO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
 
 const TEXT_PAGAMENTO_SALDO = "Pagamento c/ saldo";
 const TEXT_CASHBACK = "Cashback";
-const TEXT_PAGAMENTO_DINHEIRO = "Pagamento em dinheiro";
-const TEXT_PAGAMENTO_CARTAO = "Pagamento em cartão";
+const TEXT_PAGAMENTO = "Pagamento";
 
 export const SECTION_STATE_LOADING="loading";	// loading
 export const SECTION_STATE_DATA="data";			// true for transactions
@@ -66,8 +64,7 @@ export function utils_fmt_history_img(val) {
     const history_img_map = {
         "pagamento_saldo": IMG_PAGAMENTO_SALDO,
         "cashback": IMG_CASHBACK,
-        "pagamento_dinheiro": IMG_PAGAMENTO_DINHEIRO,
-        "pagamento_cartao": IMG_PAGAMENTO_CARTAO,
+        "pagamento": IMG_PAGAMENTO,
     };
     return history_img_map[val] ?? "";
 }
@@ -76,8 +73,7 @@ export function utils_fmt_history_type(val) {
     const history_type_map = {
         "pagamento_saldo": TEXT_PAGAMENTO_SALDO,
         "cashback": TEXT_CASHBACK,
-        "pagamento_dinheiro": TEXT_PAGAMENTO_DINHEIRO,
-        "pagamento_cartao": TEXT_PAGAMENTO_CARTAO,
+        "pagamento": TEXT_PAGAMENTO,
     };
     return history_type_map[val] ?? "";
 }
