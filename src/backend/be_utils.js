@@ -72,7 +72,8 @@ export async function be_utils_get_history(_filter) {
 
         hist = hist.filter((value) => {
             const item_time = new Date(value.data);
-            if (now.getDate() - item_time.getDate() <= period_of_time)
+            let time_diff = Math.abs((now.getTime() - item_time.getTime())/(1000*60*60*24)); // converting miliseconds to days
+            if (time_diff <= period_of_time)
                 return value;
         })
 
