@@ -150,11 +150,11 @@ export function utils_show_hide_section(show_list, hide_list) {
 
 // function on 'utils' to be used by 'Extrato' and 'Home' pages
 export function utils_set_sections_history(state) {
-    switch (state) {
-        case SECTION_STATE_LOADING:
-            return utils_show_hide_section(["#sectionLoading"], ["#sectionHistData, #sectionNoData"]);
-        case SECTION_STATE_DATA:
-            return utils_show_hide_section(["#sectionHistData"], ["#sectionLoading, #sectionNoData"]);
+	switch (state) {
+		case SECTION_STATE_LOADING:
+			return utils_show_hide_section(["#sectionLoading"], ["#sectionHistData, #sectionNoData"]);
+		case SECTION_STATE_DATA:
+			return utils_show_hide_section(["#sectionHistData"], ["#sectionLoading, #sectionNoData"]);
 		case SECTION_STATE_NO_DATA:
 			return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
     }
