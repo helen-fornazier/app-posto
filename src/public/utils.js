@@ -166,7 +166,7 @@ export async function utils_load_history(_is_resumed, _filter) {
         utils_set_sections_history(SECTION_STATE_DATA);
     });
     
-    let history = (await be_mod_utils_get_history(_filter)).reverse();
+    let history = (await be_mod_utils_get_history(_filter));
 
 	if(_is_resumed)
     	history = history.length >= QTDE_ITENS_RESUMO ? history.slice(0 , QTDE_ITENS_RESUMO) : history; // limits items on resume

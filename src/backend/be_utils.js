@@ -79,5 +79,5 @@ export async function be_utils_get_history(_filter) {
 
     }
 
-    return hist;
+    return hist.reverse();
 }
