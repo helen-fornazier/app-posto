@@ -155,8 +155,8 @@ export function utils_set_sections_history(state) {
             return utils_show_hide_section(["#sectionLoading"], ["#sectionHistData, #sectionNoData"]);
         case SECTION_STATE_DATA:
             return utils_show_hide_section(["#sectionHistData"], ["#sectionLoading, #sectionNoData"]);
-		case SECTION_STATE_NO_DATA:
-			return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
+        case SECTION_STATE_NO_DATA:
+            return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
     }
 }
 
