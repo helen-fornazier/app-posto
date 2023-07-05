@@ -2,6 +2,7 @@
 
 import { authentication } from 'wix-members';
 import { currentMember } from 'wix-members';
+import wixStorage from 'wix-storage';
 
 import {
     utils_set_sections_history,
@@ -18,6 +19,7 @@ async function fill_member_picture() {
 }
 
 $w.onReady(function () {
+    wixStorage.local.clear();
     utils_set_sections_history(SECTION_STATE_LOADING);
     utils_load_history(true, "");
 	fill_member_picture();
