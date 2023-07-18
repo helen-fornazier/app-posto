@@ -73,11 +73,6 @@ export function utils_fmt_money(val) { // receive in cents or in string in Local
     return is_negative ? "-" + val : val;
 }
 
-export function utils_fmt_money_prefix_to_cents(value) {
-	let amount_cents = parseFloat(value.replace("R$ ", "")) * 100;
-	return amount_cents;
-}
-
 export function utils_fmt_strip_non_digits(value) {
 	return value ? value.toString().replace(/\D/g,'') : "";
 }

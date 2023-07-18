@@ -4,8 +4,8 @@
 import wixStorage from 'wix-storage';
 import wixLocation from 'wix-location'
 
-import { 
-    utils_fmt_money_prefix_to_cents,
+import {
+    utils_fmt_strip_non_digits,
     utils_fmt_money_with_prefix,
     utils_config_items,
     utils_show_hide_section,
@@ -24,7 +24,7 @@ import {
 const porcentagem_cashback = 0.05;
 
 let abastecer_values = JSON.parse(wixStorage.local.getItem('abastecer_values'));
-let valor_abastecimento = utils_fmt_money_prefix_to_cents(abastecer_values.valor);
+let valor_abastecimento = parseInt(utils_fmt_strip_non_digits(abastecer_values.valor));
 let tipo_combustivel = abastecer_values.tipo_combustivel;
 
 let bomba_information = JSON.parse(wixStorage.local.getItem('bomba_information'));
@@ -53,7 +53,7 @@ async function set_saldo() {
 
 function calculate_caskback_value() {
     let cashback = valor_abastecimento * porcentagem_cashback;
-    return cashback;
+    return Math.trunc(cashback); // Ignore less than 1 cent
 }
 
 async function onclick_usar_saldo() {
