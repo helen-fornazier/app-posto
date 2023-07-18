@@ -77,7 +77,7 @@ function set_resume_values(is_cashback, value) {
         $w("#boxCashback").style.borderColor = app_colors.blue_gray_opacity;
         $w("#textCashbackResume").text = "+ " + utils_fmt_money_with_prefix(0);
         $w("#textUsarSaldoResume").text = "- " + utils_fmt_money_with_prefix(value);
-        let valor_a_pagar = valor_abastecimento - value;
+        let valor_a_pagar = valor_abastecimento + value;
         $w("#textValorAPagar").text = utils_fmt_money_with_prefix(valor_a_pagar);
         tipo_de_pagamento = "pagamento_saldo";
     }
