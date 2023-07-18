@@ -103,6 +103,9 @@ export function utils_fmt_history_type(val) {
 }
 
 export function utils_fmt_only_number(val) {
+	if (val == 0)
+		return 0;
+
 	val = val ?? "";
 
 	if (parseInt(val[0])){
