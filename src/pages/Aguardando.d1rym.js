@@ -1,9 +1,12 @@
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 // “Hello, World!” Example: https://learn-code.wix.com/en/article/1-hello-world
 import wixLocation from 'wix-location'
+import wixStorage from 'wix-storage';
 
 import {
     utils_show_hide_section,
+    utils_fmt_strip_non_digits,
+    utils_fmt_money_with_prefix,
     TRANSACAO_APROVADA,
     TRANSACAO_RECUSADA,
     SECTION_STATE_LOADING,
@@ -17,6 +20,9 @@ import {
 const transaction_id = wixLocation.query.id;
 
 let wait_change;
+
+let abastecer_values = JSON.parse(wixStorage.local.getItem('abastecer_values'));
+let valor_abastecimento = parseInt(utils_fmt_strip_non_digits(abastecer_values.valor));
 
 
 function set_sections(state) {
@@ -56,6 +62,7 @@ function approve_wait() {
 $w.onReady(function () {
     approve_wait();
     set_sections(SECTION_STATE_LOADING);
+    $w("#textWaitApproveDescription").text = "​Aguardando autorização do abastecimento no posto no valor de " + utils_fmt_money_with_prefix(valor_abastecimento)
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')
