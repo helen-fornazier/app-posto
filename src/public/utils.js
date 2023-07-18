@@ -78,6 +78,14 @@ export function utils_fmt_history_type(val) {
     return history_type_map[val] ?? "";
 }
 
+export function utils_fmt_only_number(val) {
+	val = val ?? "";
+
+	if (parseInt(val[0])){
+		return val[0];
+	}
+}
+
 
 // -------------- config functions --------------------
 export function utils_config_items($w, config, data) {
@@ -150,13 +158,13 @@ export function utils_show_hide_section(show_list, hide_list) {
 
 // function on 'utils' to be used by 'Extrato' and 'Home' pages
 export function utils_set_sections_history(state) {
-	switch (state) {
-		case SECTION_STATE_LOADING:
-			return utils_show_hide_section(["#sectionLoading"], ["#sectionHistData, #sectionNoData"]);
-		case SECTION_STATE_DATA:
-			return utils_show_hide_section(["#sectionHistData"], ["#sectionLoading, #sectionNoData"]);
-		case SECTION_STATE_NO_DATA:
-			return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
+    switch (state) {
+        case SECTION_STATE_LOADING:
+            return utils_show_hide_section(["#sectionLoading"], ["#sectionHistData, #sectionNoData"]);
+        case SECTION_STATE_DATA:
+            return utils_show_hide_section(["#sectionHistData"], ["#sectionLoading, #sectionNoData"]);
+        case SECTION_STATE_NO_DATA:
+            return utils_show_hide_section(["#sectionNoData"], ["#sectionHistData, #sectionLoading"]);
     }
 }
 
@@ -177,15 +185,15 @@ export async function utils_load_history(_is_resumed, _filter) {
         utils_set_sections_history(SECTION_STATE_NO_DATA);
 }
 
-export function utils_get_filters_values(_map_filters) {
-	const keys = Object.keys(_map_filters)
-	const _filter = {}
+export function utils_get_elements_values(map_elements) {
+	const keys = Object.keys(map_elements);
+	const _filter = {};
 	
 	for (let item of keys){
-		_filter[item] = $w(_map_filters[item]).value
+		_filter[item] = $w(map_elements[item]).value;
 	}
 
-	return _filter
+	return _filter;
 }
 
 

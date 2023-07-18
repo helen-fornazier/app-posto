@@ -43,6 +43,26 @@ const json_test5 = {
     "nome": "Posto Caconde"
 }
 
+const json_test_bombas = {
+    "_id": "1",
+    "cod_bomba": "11111",
+    "id_posto": "17"
+}
+
+const json_test_bombas2 = {
+    "_id": "2",
+    "cod_bomba": "11121",
+    "id_posto": "17"
+}
+
+const json_test_posto = {
+    "_id": "17",
+    "nome": "Posto Caldas",
+    "endereco": "Rua Jose, 92 - Congonhas, Caldas",
+    "img_posto": ""
+}
+
+
 // TODO: add the logic to catch all information from database
 // and remove all 'json_test'
 export async function be_utils_get_history(_filter) {
@@ -80,4 +100,35 @@ export async function be_utils_get_history(_filter) {
     }
 
     return hist.reverse();
+}
+
+// TODO: add the logic to catch all information from database
+// and remove all 'json_test'
+export async function be_utils_get_bombas_code (code_bomba) {
+    // DATABASE: return: cod_bomba, nome_posto, img_posto, endereco_posto
+    let bombas = [];
+    bombas.push(json_test_bombas);
+    bombas.push(json_test_bombas2);
+
+    let postos = [];
+    postos.push(json_test_posto);
+
+    let possible_bombas = bombas.filter(bomba => {
+        return !Array.from(code_bomba).some((char, i) => {
+          return char !== '-' && char !== bomba.cod_bomba[i];
+        });
+    });
+
+    let posto_and_bomba_informations = possible_bombas.map(bomba => {
+        let posto = postos.find(posto => posto._id === bomba.id_posto);
+        return {...bomba,
+                cod_bomba: bomba.cod_bomba,
+                cod_e_posto: bomba.cod_bomba + " - " + posto.nome,
+                img_posto: posto.img_posto,
+                endereco_posto: posto.endereco
+            };
+    });
+
+    // returns {_id, cod_bomba, id_posto, nome_posto, img_posto, endereco_posto}
+    return posto_and_bomba_informations;
 }
