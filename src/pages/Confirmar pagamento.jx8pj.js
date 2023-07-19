@@ -97,7 +97,7 @@ async function check_saldo() {
     let saldo = await utils_get_saldo();
     if (saldo <= valor_abastecimento)
         return (saldo * -1);
-    return valor_abastecimento;
+    return valor_abastecimento * -1;
 }
 
 async function onclick_confirmar_pagamento() {
@@ -108,7 +108,7 @@ async function onclick_confirmar_pagamento() {
         tipo: tipo_de_pagamento,
         tipoCombustivel: tipo_combustivel,
         valor: valor_abastecimento,
-        valorTipo: tipo_de_pagamento == "cashback" ? calculate_caskback_value() : (await check_saldo() * -1),
+        valorTipo: tipo_de_pagamento == "cashback" ? calculate_caskback_value() : (await check_saldo()),
         situacao: TRANSACAO_PENDENTE,
         codBomba: cod_bomba,
     };

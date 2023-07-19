@@ -45,7 +45,7 @@ function fmt_saldo_usado(val) {
 }
 
 async function onclick_aprovar_transacao() {
-    let update_transaction = {"_id": receivedData._id, "status": TRANSACAO_APROVADA};
+    let update_transaction = {"_id": receivedData._id, "status": TRANSACAO_APROVADA, "cliente_id": receivedData.cliente_id};
     wixWindow.openLightbox("Mensagem aviso aprovar (interno)", update_transaction);
 }
 

@@ -10,6 +10,7 @@ import {
 
 import {
     be_mod_utils_update_transaction,
+    be_mod_utils_update_client_saldo,
 } from "backend/be_mod_utils";
 
 let receivedData = wixWindowFrontend.lightbox.getContext();
@@ -22,6 +23,7 @@ let g_aprovar = [
 
 function onclick_update_transaction() {
     be_mod_utils_update_transaction(receivedData._id, TRANSACAO_APROVADA);
+    be_mod_utils_update_client_saldo(receivedData.cliente_id, receivedData._id);
     wixWindow.openLightbox("Operação realizada com sucesso (interno)");
 }
 

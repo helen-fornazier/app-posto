@@ -143,6 +143,7 @@ export async function be_utils_get_transaction_detail(transaction_id) {
         saldo_usado: transacao.tipo == "cashback" ? 0 : transacao.valorTipo,
         valor_a_pagar: transacao.tipo == "cashback" ? transacao.valor : transacao.valor + transacao.valorTipo,
         situacao: transacao.situacao,
+        cliente_id: transacao.clienteId,
     }
 
     // return [{nome, tipo_combustivel, cod_bomba, data, hora, valor, is_cashback, saldo_usado, valor_a_pagar}]
@@ -153,7 +154,6 @@ export async function be_utils_get_transaction_detail(transaction_id) {
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {
-    update_client_saldo(transacao.clienteId, transacao.valorTipo, transacao.tipo);
     return wixData.insert(BD_TRANSACOES, transacao)
     .then((result) => {
         const itemInserido = result;
@@ -191,7 +191,7 @@ export async function be_utils_cadastrar_cliente(cliente) {
 }
 
 
-// -------------- database insert functions --------------------
+// -------------- database update functions --------------------
 export async function be_utils_update_transaction(transaction_id, transaction_status) {
     //transaction_status = "aprovada" || "recusada"
     const item = await wixData.get(BD_TRANSACOES, transaction_id);
@@ -200,6 +200,15 @@ export async function be_utils_update_transaction(transaction_id, transaction_st
     await wixData.update(BD_TRANSACOES, item);
 
     return true;
+}
+
+export async function be_utils_update_client_saldo(cliente_id, transaction_id) {
+    console.log("ATUALIZANDO SALDO DO CLIENTE");
+    let valor_tipo = (await get_transaction_infos(transaction_id)).valorTipo;
+    const item = await wixData.get(BD_CLIENTE, cliente_id);
+    item.saldo += valor_tipo;
+    
+    await wixData.update(BD_CLIENTE, item);
 }
 
 
@@ -213,9 +222,13 @@ async function get_client_infos(cliente_id) {
                 })
 }
 
-async function update_client_saldo(cliente_id, valor_tipo, tipo) {
-    const item = await wixData.get(BD_CLIENTE, cliente_id);
-    item.saldo += valor_tipo;
+async function get_transaction_infos(transaction_id) {
+    let transacao = await wixData.query(BD_TRANSACOES)
+        .eq("_id", transaction_id)
+        .find({suppressAuth: true})
+        .then((results) => {
+            return results["items"][0];
+        });
     
-    await wixData.update(BD_CLIENTE, item);
+    return transacao;
 }

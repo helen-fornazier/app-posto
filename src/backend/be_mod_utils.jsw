@@ -7,6 +7,7 @@ import {
 	be_utils_get_pending_transactions,
 	be_utils_get_transaction_detail,
 	be_utils_update_transaction,
+	be_utils_update_client_saldo,
 } from 'backend/be_utils.js';
 
 
@@ -40,4 +41,8 @@ export function be_mod_utils_get_transaction_detail (transaction_id) {
 
 export function be_mod_utils_update_transaction(transaction_id, transaction_status) {
 	return be_utils_update_transaction(transaction_id, transaction_status);
+}
+
+export function be_mod_utils_update_client_saldo(cliente_id, transaction_id) {
+	return be_utils_update_client_saldo(cliente_id, transaction_id);
 }
