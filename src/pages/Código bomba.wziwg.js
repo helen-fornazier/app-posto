@@ -25,9 +25,10 @@ let g_codigo_bomba = [
 ];
 
 let g_bombas_map = [
-    {ui: "#textNomePosto", db: "cod_e_posto", type: "text", onClick: onclick_bomba_selected},
+    {ui: "#textNomePosto", db: "cod_e_posto", type: "text"},
     {ui: "#textEnderecoPosto", db: "endereco_posto", type: "text"},
-    {ui: "#imagePosto", db: "img_posto", type: "src"}
+    {ui: "#imagePosto", db: "img_posto", type: "src"},
+    {ui: "#boxItemRepeaterPosto", onClick: onclick_bomba_selected}
 ];
 
 const map_bombas = {"bomba1": "#inputCodBomba1", "bomba2": "#inputCodBomba2", "bomba3": "#inputCodBomba3", "bomba4": "#inputCodBomba4", "bomba5": "#inputCodBomba5"};
@@ -45,7 +46,8 @@ function set_sections(state) {
 }
 
 function onclick_bomba_selected(event) {
-    let cod_bomba = event.target.text.split(" - ")[0];
+    let $item = $w.at(event.context)
+    let cod_bomba = $item("#textNomePosto").text.split(" - ")[0];
 
     Array.from(cod_bomba).forEach((char, index) => {
         $w(map_bombas[`bomba${index + 1}`]).value = char;
