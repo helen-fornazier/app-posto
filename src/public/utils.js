@@ -207,7 +207,7 @@ export async function utils_load_history(_is_resumed, _filter) {
 
 	let member = await utils_get_member();
     
-    let history = (await be_mod_utils_get_history(_filter, member._id));
+    let history = (await be_mod_utils_get_history(_filter, member._id, TRANSACAO_APROVADA));
 
 	if(_is_resumed)
     	history = history.length >= QTDE_ITENS_RESUMO ? history.slice(0 , QTDE_ITENS_RESUMO) : history; // limits items on resume

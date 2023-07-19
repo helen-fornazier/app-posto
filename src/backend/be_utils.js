@@ -10,12 +10,13 @@ const hist_filter_period = {"semana": 7, "quinzena": 15, "mes": 30, "trimestre":
 
 
 // -------------- database query functions --------------------
-export async function be_utils_get_history(_filter, member_id) {
+export async function be_utils_get_history(_filter, member_id, transaction_status) {
     const _filter_date = _filter["date"]
     const filter_transaction = _filter["transaction"]
 
     let transacoes = await wixData.query(BD_TRANSACOES)
                             .eq("clienteId", member_id)
+                            .eq("situacao", transaction_status)
                             .find({suppressAuth: true})
                             .then((results) => {
                                 return results["items"];
