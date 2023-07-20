@@ -2,6 +2,7 @@
 
 import { authentication } from 'wix-members';
 import wixStorage from 'wix-storage';
+import wixLocation from 'wix-location'
 
 import {
     utils_set_sections_history,
@@ -13,6 +14,7 @@ import {
 
 import {
     be_mod_utils_cadastrar_cliente,
+    be_mod_utils_check_is_funcionario
 } from "backend/be_mod_utils";
 
 
@@ -26,6 +28,12 @@ async function fill_member_data() {
 
 async function query_database() {
     let member = (await utils_get_member());
+    let is_funcionario = await be_mod_utils_check_is_funcionario(member.loginEmail);
+    if (is_funcionario){
+        console.log("FUNCIONARIO");
+        wixLocation.to("/aprovarinterno");
+    }
+
     let cliente_on_database = await be_mod_utils_cadastrar_cliente(member);
     if (!cliente_on_database)
         console.log("Cadastrado com sucesso!");

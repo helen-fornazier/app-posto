@@ -8,6 +8,7 @@ import {
 	be_utils_get_transaction_detail,
 	be_utils_update_transaction,
 	be_utils_update_client_saldo,
+	be_utils_check_is_funcionario
 } from 'backend/be_utils.js';
 
 
@@ -45,4 +46,8 @@ export function be_mod_utils_update_transaction(transaction_id, transaction_stat
 
 export function be_mod_utils_update_client_saldo(cliente_id, transaction_id) {
 	return be_utils_update_client_saldo(cliente_id, transaction_id);
+}
+
+export function be_mod_utils_check_is_funcionario (funcionario_email) {
+	return be_utils_check_is_funcionario(funcionario_email);
 }

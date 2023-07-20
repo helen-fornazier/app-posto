@@ -4,6 +4,7 @@ export const BD_TRANSACOES = "transacoes";
 export const BD_CLIENTE = "cliente";
 export const BD_POSTOS = "postos";
 export const BD_BOMBAS = "bombas";
+export const BD_FUNCIONARIOS = "funcionarios";
 
 const hist_filter_transaction = ["cashback", "pagamento"];
 const hist_filter_period = {"semana": 7, "quinzena": 15, "mes": 30, "trimestre": 90};
@@ -190,6 +191,17 @@ export async function be_utils_cadastrar_cliente(cliente) {
     return
 }
 
+
+export async function be_utils_check_is_funcionario(funcionario_email) {
+    let funcionarios = await wixData.query(BD_FUNCIONARIOS)
+                            .eq("email", funcionario_email)
+                            .find({suppressAuth: true})
+                            .then((results) => {
+                                return results["items"];
+                            });
+    let is_funcionario = funcionarios["length"] ? true : false;
+    return is_funcionario;
+}
 
 // -------------- database update functions --------------------
 export async function be_utils_update_transaction(transaction_id, transaction_status) {
