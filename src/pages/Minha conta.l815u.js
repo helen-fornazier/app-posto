@@ -2,5 +2,5 @@
 import wixLocation from 'wix-location';
 
 $w.onReady(function () {
-	$w("#buttonVoltar").onClick(()=> {wixLocation.to("/acesso")});
+	$w("#buttonVoltar").onClick(()=> {wixLocation.to("/menu")});
 });
