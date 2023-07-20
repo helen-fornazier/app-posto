@@ -57,6 +57,7 @@ async function get_transaction_selected_information(transaction_id) {
 
 $w.onReady(function () {
     load_pending_transactions();
+    setInterval(load_pending_transactions, 5000);
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')
