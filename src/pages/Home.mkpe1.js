@@ -9,6 +9,7 @@ import {
     utils_load_history,
     utils_get_member,
     utils_fmt_saldo,
+    utils_get_saldo,
     SECTION_STATE_LOADING,
 } from 'public/utils';
 
@@ -41,12 +42,18 @@ async function query_database() {
         console.log("Cliente já no banco!");
 }
 
+async function save_saldo() {
+    let saldo_total = await utils_get_saldo();
+    wixStorage.local.setItem('saldo_total', JSON.stringify(saldo_total));
+}
+
 
 $w.onReady(function () {
     wixStorage.local.clear();
     utils_set_sections_history(SECTION_STATE_LOADING);
     utils_load_history(true, "");
 	fill_member_data();
+    save_saldo();
     query_database();
 
     // Escreva seu código JavaScript aqui usando o API de framework do Velo
