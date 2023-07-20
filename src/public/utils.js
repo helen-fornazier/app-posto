@@ -32,7 +32,7 @@ export let g_hist_map = [
 export const hist_filters = {"date": "#dropdownFilterDate", "transaction": "#dropdownFilterTransaction"};
 
 export const app_colors = {
-	"orange": "#F49620", 
+	"main": "#DCF424", 
 	"blue": "#0C2538",
 	"blue_gray_opacity": "rgba(58, 80, 96, 0.2)",
 	"red": "#E35D3D"

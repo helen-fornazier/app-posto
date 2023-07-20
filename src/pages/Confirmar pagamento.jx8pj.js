@@ -67,13 +67,13 @@ function onclick_acumular_cashback() {
 function set_resume_values(is_cashback, value) {
     if (is_cashback) {
         $w("#boxUsarSaldo").style.borderColor = app_colors.blue_gray_opacity;
-        $w("#boxCashback").style.borderColor = app_colors.orange;
+        $w("#boxCashback").style.borderColor = app_colors.main;
         $w("#textCashbackResume").text = "+ " + utils_fmt_money_with_prefix(calculate_caskback_value());
         $w("#textUsarSaldoResume").text = "- " + utils_fmt_money_with_prefix(0);
         $w("#textValorAPagar").text = utils_fmt_money_with_prefix(valor_abastecimento);
         tipo_de_pagamento = "cashback";
     } else {
-        $w("#boxUsarSaldo").style.borderColor = app_colors.orange;
+        $w("#boxUsarSaldo").style.borderColor = app_colors.main;
         $w("#boxCashback").style.borderColor = app_colors.blue_gray_opacity;
         $w("#textCashbackResume").text = "+ " + utils_fmt_money_with_prefix(0);
         $w("#textUsarSaldoResume").text = "- " + utils_fmt_money_with_prefix(value);
