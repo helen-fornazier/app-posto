@@ -51,10 +51,10 @@ async function save_saldo() {
 $w.onReady(function () {
     wixStorage.local.clear();
     utils_set_sections_history(SECTION_STATE_LOADING);
+    query_database();
     utils_load_history(true, "");
 	fill_member_data();
     save_saldo();
-    query_database();
 
     // Escreva seu código JavaScript aqui usando o API de framework do Velo
 
