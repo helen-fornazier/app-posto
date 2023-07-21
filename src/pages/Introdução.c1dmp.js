@@ -5,6 +5,8 @@ import { authentication } from 'wix-members';
 $w.onReady(function () {
 	$w("#textCriarCadastro").onClick(criarcadastro_click);
 	$w("#buttonLogin").onClick(login_click);
+	$w("#textCriarCadastroDesk").onClick(criarcadastro_click);
+    $w("#buttonLoginDesk").onClick(login_click);
 });
 
 function criarcadastro_click(event) {
