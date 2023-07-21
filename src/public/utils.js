@@ -17,7 +17,7 @@ export const TRANSACAO_PENDENTE = "pendente";
 export const TRANSACAO_APROVADA = "aprovada";
 export const TRANSACAO_RECUSADA = "recusada";
 
-const QTDE_ITENS_RESUMO = 2; // max number of transactions on resume
+const QTDE_ITENS_RESUMO = 10; // max number of transactions on resume
 
 // transaction history repeater: constant on utils to be used by 'Extrato' and 'Home' pages
 export let g_hist_map = [
