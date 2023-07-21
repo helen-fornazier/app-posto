@@ -11,6 +11,7 @@ import {
     TRANSACAO_RECUSADA,
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
+    SECTION_STATE_NO_DATA,
 } from "public/utils";
 
 import {
@@ -28,9 +29,11 @@ let valor_abastecimento = parseInt(utils_fmt_strip_non_digits(abastecer_values.v
 function set_sections(state) {
     switch (state){
         case SECTION_STATE_LOADING:
-            return utils_show_hide_section(["#sectionAguardando"], ["#sectionConcluido"]);
+            return utils_show_hide_section(["#sectionAguardando"], ["#sectionConcluido", "#sectionRecusado"]);
         case SECTION_STATE_DATA:
-            return utils_show_hide_section(["#sectionConcluido"], ["#sectionAguardando"]);
+            return utils_show_hide_section(["#sectionConcluido"], ["#sectionAguardando", "#sectionRecusado"]);
+        case SECTION_STATE_NO_DATA:
+            return utils_show_hide_section(["#sectionRecusado"], ["#sectionAguardando", "#sectionConcluido"]);
     }
 }
 
@@ -51,7 +54,7 @@ function approve_wait() {
                 stop_wait_change();
             } else if (result.situacao == TRANSACAO_RECUSADA){
                 console.log("TRANSACAO RECUSADA");
-                set_sections(SECTION_STATE_DATA);
+                set_sections(SECTION_STATE_NO_DATA);
                 stop_wait_change();
             }
         });
