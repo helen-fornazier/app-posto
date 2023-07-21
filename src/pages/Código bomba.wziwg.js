@@ -17,11 +17,11 @@ import {
 
 
 let g_codigo_bomba = [
-    {ui: "#inputCodBomba1", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion},
-    {ui: "#inputCodBomba2", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion},
-    {ui: "#inputCodBomba3", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion},
-    {ui: "#inputCodBomba4", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion},
-    {ui: "#inputCodBomba5", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion},
+    {ui: "#inputCodBomba1", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
+    {ui: "#inputCodBomba2", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
+    {ui: "#inputCodBomba3", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
+    {ui: "#inputCodBomba4", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
+    {ui: "#inputCodBomba5", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
 ];
 
 let g_bombas_map = [
@@ -77,6 +77,27 @@ async function get_bomba_suggestion() {
 
     if (!possible_bombas.length)
         set_sections(SECTION_STATE_NO_DATA);
+}
+
+function onInput_go_to_next_bomba_input(event) {
+    let input = event.target.id;
+    let num_bomba = input.match(/\d+/g)[0];
+    switch (num_bomba) {
+        case "1":
+            $w("#inputCodBomba2").focus();
+            break;
+        case "2":
+            $w("#inputCodBomba3").focus();
+            break;
+        case "3":
+            $w("#inputCodBomba4").focus();
+            break;
+        case "4":
+            $w("#inputCodBomba5").focus();
+            break;
+        default:
+            break;
+    }
 }
 
 async function save_to_local_storage(cod_bomba) {
