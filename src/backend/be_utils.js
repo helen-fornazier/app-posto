@@ -158,7 +158,6 @@ export async function be_utils_cadastrar_transacao(transacao) {
     return wixData.insert(BD_TRANSACOES, transacao)
     .then((result) => {
         const itemInserido = result;
-        console.log(itemInserido);
         return result._id;
     })
     .catch((error) => {
@@ -181,7 +180,6 @@ export async function be_utils_cadastrar_cliente(cliente) {
         await wixData.insert(BD_CLIENTE, cliente_db)
         .then((result) => {
             const itemInserido = result;
-            console.log(itemInserido);
         })
         .catch((error) => {
             console.error(error);

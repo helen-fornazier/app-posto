@@ -36,10 +36,10 @@ async function query_database() {
     }
 
     let cliente_on_database = await be_mod_utils_cadastrar_cliente(member);
-    if (!cliente_on_database)
+    /*if (!cliente_on_database)
         console.log("Cadastrado com sucesso!");
     else
-        console.log("Cliente já no banco!");
+        console.log("Cliente já no banco!");*/
 }
 
 async function save_saldo() {
