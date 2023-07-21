@@ -58,15 +58,12 @@ function onclick_bomba_selected(event) {
 }
 
 async function get_bomba_suggestion() {
-    // while the person is typing or not select a 'posto' yet, disable option 'Avancar'
-    $w("#buttonCodBombaAvancar").disable();
-
     set_sections (SECTION_STATE_LOADING);
 
     // catch and treat 'bomba' information
     let bomba_values = utils_get_elements_values(map_bombas);
     let cod_bomba = Object.values(bomba_values).map(val => val === '' ? '-' : val).join('');
-    
+
     $w("#repeaterBombas").onItemReady( ($item, itemData, index) => {
         set_sections (SECTION_STATE_DATA);
         utils_config_items($item, g_bombas_map, itemData);
@@ -75,8 +72,10 @@ async function get_bomba_suggestion() {
     let possible_bombas = await be_mod_utils_get_bombas_code(cod_bomba)
     $w("#repeaterBombas").data = possible_bombas;
 
-    if (!possible_bombas.length)
+    if (!possible_bombas.length){
         set_sections(SECTION_STATE_NO_DATA);
+        $w("#buttonCodBombaAvancar").disable();
+    }
 }
 
 function onInput_go_to_next_bomba_input(event) {
@@ -108,20 +107,22 @@ async function save_to_local_storage(cod_bomba) {
 }
 
 function render_values() {
-    let cod_bomba = JSON.parse(wixStorage.local.getItem('bomba_information')).codBomba;
+    let cod_bomba = JSON.parse(wixStorage.local.getItem('bomba_information'))?.codBomba ?? "";
     if (cod_bomba) {
         Array.from(cod_bomba).forEach((char, index) => {
             $w(map_bombas[`bomba${index + 1}`]).value = char;
         });
+        $w("#buttonCodBombaAvancar").enable();
     }
     get_bomba_suggestion();
 }
 
 $w.onReady(function () {
+    // while the person is typing or not select a 'posto' yet, disable option 'Avancar'
+    $w("#buttonCodBombaAvancar").disable();
     set_sections (SECTION_STATE_LOADING);
-    get_bomba_suggestion();
     utils_config_items($w, g_codigo_bomba);
-    render_values()
+    render_values();
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')
