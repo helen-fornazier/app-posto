@@ -10,6 +10,7 @@ import {
     utils_get_member,
     utils_fmt_saldo,
     utils_get_saldo,
+    utils_onclick_show_hide_saldo,
     SECTION_STATE_LOADING,
 } from 'public/utils';
 
@@ -17,6 +18,8 @@ import {
     be_mod_utils_cadastrar_cliente,
     be_mod_utils_check_is_funcionario
 } from "backend/be_mod_utils";
+
+let saldo;
 
 
 async function fill_member_data() {
@@ -45,6 +48,7 @@ async function query_database() {
 async function save_saldo() {
     let saldo_total = await utils_get_saldo();
     wixStorage.local.setItem('saldo_total', JSON.stringify(saldo_total));
+    saldo = JSON.parse(wixStorage.local.getItem('saldo_total'));
 }
 
 
@@ -56,6 +60,8 @@ $w.onReady(function () {
     utils_load_history(true, "");
 	fill_member_data();
     save_saldo();
+
+    $w("#buttonHideShowAmount").onClick(() => utils_onclick_show_hide_saldo(saldo));
 
     // Escreva seu código JavaScript aqui usando o API de framework do Velo
 

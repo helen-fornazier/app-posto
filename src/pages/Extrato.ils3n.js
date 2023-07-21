@@ -7,28 +7,20 @@ import {
     utils_load_history,
     utils_get_elements_values,
     utils_fmt_saldo,
-    utils_fmt_money_with_prefix,
+    utils_onclick_show_hide_saldo,
     hist_filters,
     SECTION_STATE_LOADING,
 } from 'public/utils';
 
-const hide_amount = "****"
 let saldo_total = JSON.parse(wixStorage.local.getItem('saldo_total'));
 
-
-function onClick_show_hide_amount() {
-	if ($w("#textSaldoEmConta").text == hide_amount)
-	    $w("#textSaldoEmConta").text = utils_fmt_money_with_prefix(saldo_total);
-	else
-		$w("#textSaldoEmConta").text = hide_amount;
-}
 
 $w.onReady(function () {
     utils_fmt_saldo();
     utils_set_sections_history(SECTION_STATE_LOADING);
     utils_load_history(false, "");
     
-    $w("#buttonHideShowAmount").onClick(onClick_show_hide_amount);
+    $w("#buttonHideShowAmount").onClick(() => utils_onclick_show_hide_saldo(saldo_total));
 
     $w("#dropdownFilterDate").onChange((event) => {
         utils_set_sections_history(SECTION_STATE_LOADING);

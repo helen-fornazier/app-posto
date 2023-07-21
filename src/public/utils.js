@@ -38,6 +38,8 @@ export const app_colors = {
 	"red": "#E35D3D"
 }
 
+export const hide_amount = "****";
+
 // -------------- fmt functions --------------------
 export function utils_fmt_money_with_prefix(value) {
 	value = utils_fmt_money(value);
@@ -239,6 +241,13 @@ export async function  utils_get_saldo() {
 	let saldo = await be_mod_utils_get_saldo(member._id);
 
 	return saldo;
+}
+
+export function utils_onclick_show_hide_saldo(saldo_total) {
+	if ($w("#textSaldoEmConta").text == hide_amount)
+	    $w("#textSaldoEmConta").text = utils_fmt_money_with_prefix(saldo_total);
+	else
+		$w("#textSaldoEmConta").text = hide_amount;
 }
 
 
