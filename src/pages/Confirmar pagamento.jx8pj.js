@@ -124,6 +124,7 @@ $w.onReady(function () {
     set_sections(SECTION_STATE_DATA);
     utils_config_items($w, g_confirmar_pagamento);
     set_saldo();
+    set_resume_values(true);
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')
