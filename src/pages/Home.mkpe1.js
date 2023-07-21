@@ -50,6 +50,7 @@ async function save_saldo() {
 
 $w.onReady(function () {
     wixStorage.local.clear();
+    $w("#textSaldoEmConta").text = "";
     utils_set_sections_history(SECTION_STATE_LOADING);
     query_database();
     utils_load_history(true, "");
