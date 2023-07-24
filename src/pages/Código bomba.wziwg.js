@@ -120,6 +120,7 @@ function render_values() {
 $w.onReady(function () {
     // while the person is typing or not select a 'posto' yet, disable option 'Avancar'
     $w("#buttonCodBombaAvancar").disable();
+    $w("#inputCodBomba1").focus();
     set_sections (SECTION_STATE_LOADING);
     utils_config_items($w, g_codigo_bomba);
     render_values();
