@@ -9,6 +9,7 @@ import { utils_config_items,
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
     SECTION_STATE_NO_DATA,
+    app_colors,
 } from "public/utils";
 
 import {
@@ -58,11 +59,16 @@ function onclick_bomba_selected(event) {
 }
 
 async function get_bomba_suggestion() {
+    $w("#boxItemRepeaterPosto").style.borderColor = app_colors.transparent;
     set_sections (SECTION_STATE_LOADING);
 
     // catch and treat 'bomba' information
     let bomba_values = utils_get_elements_values(map_bombas);
     let cod_bomba = Object.values(bomba_values).map(val => val === '' ? '-' : val).join('');
+
+    if (cod_bomba.includes('-')){
+        $w("#buttonCodBombaAvancar").disable();
+    }
 
     $w("#repeaterBombas").onItemReady( ($item, itemData, index) => {
         set_sections (SECTION_STATE_DATA);
@@ -71,6 +77,11 @@ async function get_bomba_suggestion() {
 
     let possible_bombas = await be_mod_utils_get_bombas_code(cod_bomba)
     $w("#repeaterBombas").data = possible_bombas;
+
+    if (possible_bombas.length == 1){
+        $w("#boxItemRepeaterPosto").style.borderColor = app_colors.main;
+        save_to_local_storage(possible_bombas[0].codBomba);
+    }
 
     if (!possible_bombas.length){
         set_sections(SECTION_STATE_NO_DATA);

@@ -35,7 +35,8 @@ export const app_colors = {
 	"main": "#DCF424", 
 	"blue": "#0C2538",
 	"blue_gray_opacity": "rgba(58, 80, 96, 0.2)",
-	"red": "#E35D3D"
+	"red": "#E35D3D",
+	"transparent": "rgba(58, 80, 96, 0)"
 }
 
 export const hide_amount = "****";
