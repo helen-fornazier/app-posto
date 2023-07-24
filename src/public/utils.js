@@ -176,6 +176,9 @@ export function utils_config_items($w, config, data) {
 				}
 			});
 		}
+
+		if (item.onKeyPress)
+			$w(k).onKeyPress( (event) => { item.onKeyPress(event) });
 	}
 }
 

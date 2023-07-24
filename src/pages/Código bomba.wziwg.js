@@ -17,11 +17,11 @@ import {
 
 
 let g_codigo_bomba = [
-    {ui: "#inputCodBomba1", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
-    {ui: "#inputCodBomba2", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
-    {ui: "#inputCodBomba3", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
-    {ui: "#inputCodBomba4", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
-    {ui: "#inputCodBomba5", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input},
+    {ui: "#inputCodBomba1", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input, onKeyPress: onKeyPress_go_to_prev_bomba_input},
+    {ui: "#inputCodBomba2", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input, onKeyPress: onKeyPress_go_to_prev_bomba_input},
+    {ui: "#inputCodBomba3", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input, onKeyPress: onKeyPress_go_to_prev_bomba_input},
+    {ui: "#inputCodBomba4", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input, onKeyPress: onKeyPress_go_to_prev_bomba_input},
+    {ui: "#inputCodBomba5", type: "value", format: utils_fmt_only_number, onChange: get_bomba_suggestion, onInput: onInput_go_to_next_bomba_input, onKeyPress: onKeyPress_go_to_prev_bomba_input},
 ];
 
 let g_bombas_map = [
@@ -96,6 +96,29 @@ function onInput_go_to_next_bomba_input(event) {
             break;
         default:
             break;
+    }
+}
+
+function onKeyPress_go_to_prev_bomba_input(event) {
+    if (event.key == "Backspace"){
+        let input = event.target.id;
+        let num_bomba = input.match(/\d+/g)[0];
+        switch (num_bomba) {
+            case "2":
+                $w("#inputCodBomba1").focus();
+                break;
+            case "3":
+                $w("#inputCodBomba2").focus();
+                break;
+            case "4":
+                $w("#inputCodBomba3").focus();
+                break;
+            case "5":
+                $w("#inputCodBomba4").focus();
+                break;
+            default:
+                break;
+        }
     }
 }
 
