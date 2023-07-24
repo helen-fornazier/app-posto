@@ -23,6 +23,8 @@ import {
 
 const porcentagem_cashback = 0.05;
 
+let saldo_total;
+
 let abastecer_values = JSON.parse(wixStorage.local.getItem('abastecer_values'));
 let valor_abastecimento = parseInt(utils_fmt_strip_non_digits(abastecer_values.valor));
 let tipo_combustivel = abastecer_values.tipo_combustivel;
@@ -45,7 +47,8 @@ let g_confirmar_pagamento = [
 
 
 async function set_saldo() {
-    let saldo = await utils_get_saldo();
+    saldo_total = await utils_get_saldo()
+    let saldo = saldo_total;
     if (saldo > valor_abastecimento)
         saldo = valor_abastecimento;
     $w("#textUsarSaldoDescontar").text = "Descontar " + utils_fmt_money_with_prefix(saldo);
@@ -98,7 +101,7 @@ function set_sections(state) {
 }
 
 async function check_saldo() {
-    let saldo = await utils_get_saldo();
+    let saldo = saldo_total;
     if (saldo <= valor_abastecimento)
         return (saldo * -1);
     return valor_abastecimento * -1;
