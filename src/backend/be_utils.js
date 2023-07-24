@@ -96,7 +96,7 @@ export async function be_utils_get_bombas_code (code_bomba) {
 }
 
 export async function be_utils_get_saldo(cliente_id) {
-    let saldo = (await get_client_infos(cliente_id))["items"][0]["saldo"];
+    let saldo = (await get_client_saldo(cliente_id))["items"][0]["saldo"];
 
     return saldo;
 }
@@ -110,10 +110,10 @@ export async function be_utils_get_pending_transactions(transaction_status) {
                             });
     
     let transacoes_infos = await Promise.all(transacoes.map(async (transacao) => {
-        let cliente = (await get_client_infos(transacao.clienteId))["items"][0];
+        let cliente_nome = await get_client_name(transacao.clienteId);
         return {
             "_id": transacao._id,
-            "client_name": cliente.nome,
+            "client_name": cliente_nome,
             "cod_bomba": transacao.codBomba,
             "data": transacao._createdDate,
             "valor_a_pagar": transacao.tipo == "cashback" ? transacao.valor : transacao.valor + transacao.valorTipo,
@@ -131,11 +131,11 @@ export async function be_utils_get_transaction_detail(transaction_id) {
         .then((results) => {
             return results["items"][0];
     })
-    let cliente = (await get_client_infos(transacao.clienteId))["items"][0];
+    let cliente_nome = await get_client_name(transacao.clienteId);
 
     let selected_transaction_information = {
         _id: transacao._id,
-        nome: cliente.nome,
+        nome: cliente_nome,
         tipo_combustivel: transacao.tipoCombustivel,
         cod_bomba: transacao.codBomba,
         data: transacao._createdDate,
@@ -167,14 +167,12 @@ export async function be_utils_cadastrar_transacao(transacao) {
 }
 
 export async function be_utils_cadastrar_cliente(cliente) {
-    let cliente_on_database = await get_client_infos(cliente._id);
+    let cliente_on_database = await get_client_saldo(cliente._id);
     if (cliente_on_database["length"])
         return cliente_on_database["items"][0];
     else{
         let cliente_db = {
             _id: cliente._id,
-            nome: cliente.contactDetails.firstName + " " + cliente.contactDetails.lastName,
-            email: cliente.contactDetails.email,
             saldo: 0
         }
         await wixData.insert(BD_CLIENTE, cliente_db)
@@ -223,13 +221,35 @@ export async function be_utils_update_client_saldo(cliente_id, transaction_id) {
 
 
 // -------------- internal functions --------------------
-async function get_client_infos(cliente_id) {
+async function get_client_saldo(cliente_id) {
     return await wixData.query(BD_CLIENTE)
                 .eq("_id", cliente_id)
                 .find({suppressAuth: true})
                 .then((results) => {
                     return results;
                 })
+}
+
+async function get_client_infos(cliente_id) {
+    return await wixData.query("Members/FullData")
+                .eq("_id", cliente_id)
+                .find({suppressAuth: true})
+                .then((results) => {
+                    return results;
+                })
+}
+
+async function get_client_name(cliente_id) {
+    let cliente = (await get_client_infos(cliente_id))["items"][0];
+    let cliente_nome;
+    if (cliente.firstName && cliente.lastName)
+        cliente_nome = cliente.firstName + " " + cliente.lastName;
+    else if (cliente.firstName)
+        cliente_nome = cliente.firstName;
+    else 
+        cliente_nome = "undefined";
+
+    return cliente_nome;
 }
 
 async function get_transaction_infos(transaction_id) {
