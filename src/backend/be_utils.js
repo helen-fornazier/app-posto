@@ -152,6 +152,18 @@ export async function be_utils_get_transaction_detail(transaction_id) {
     return selected_transaction_information;
 }
 
+export async function be_utils_get_posto_pct_cashback(posto_id) {
+    let postos = await wixData.query(BD_POSTOS)
+                        .eq("_id", posto_id)
+                        .find({suppressAuth: true})
+                        .then((results) => {
+                            return results["items"];
+                        })
+    let pct_cashback = postos[0]["pctCashback"];
+    
+    return pct_cashback;
+}
+
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {

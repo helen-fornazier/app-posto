@@ -19,9 +19,10 @@ import {
 
 import {
     be_mod_utils_cadastrar_transacao,
+    be_mod_utils_get_posto_pct_cashback,
 } from "backend/be_mod_utils";
 
-const porcentagem_cashback = 0.05;
+let porcentagem_cashback;
 
 let saldo_total;
 
@@ -38,7 +39,6 @@ let tipo_de_pagamento;
 let g_confirmar_pagamento = [
     {ui: "#textValorAbastecer", type: "text", raw: utils_fmt_money_with_prefix(valor_abastecimento)},
     {ui: "#textTipoCombustivel", type: "text", raw: tipo_combustivel},
-    {ui: "#textCashback", type: "text", raw: "Ganhar " + utils_fmt_money_with_prefix(calculate_caskback_value())},
     {ui: "#textValorTotalResume", type: "text", raw: utils_fmt_money_with_prefix(valor_abastecimento)},
     {ui: "#boxUsarSaldo", onClick: onclick_usar_saldo},
     {ui: "#boxCashback", onClick: onclick_acumular_cashback},
@@ -52,6 +52,8 @@ async function set_saldo() {
     if (saldo > valor_abastecimento)
         saldo = valor_abastecimento;
     $w("#textUsarSaldoDescontar").text = "Descontar " + utils_fmt_money_with_prefix(saldo);
+    porcentagem_cashback = await be_mod_utils_get_posto_pct_cashback(posto_id);
+    $w("#textCashback").text = "Ganhar " + utils_fmt_money_with_prefix(calculate_caskback_value());
 }
 
 function calculate_caskback_value() {
