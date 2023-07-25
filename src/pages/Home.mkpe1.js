@@ -26,7 +26,11 @@ async function fill_member_data() {
     let member = await utils_get_member();
 	if (member.profile.profilePhoto)
 		$w("#imageProfile").src = member.profile.profilePhoto.url;
-	$w("#textOlaNome").text = `Olá, ${member.contactDetails.firstName}`;
+    let name = member.contactDetails?.firstName ?? "";
+    if (name)
+	    $w("#textOlaNome").text = `Olá, ${member.contactDetails.firstName}`;
+    else
+        $w("#textOlaNome").text = `Olá`;
     utils_fmt_saldo();
 }
 
