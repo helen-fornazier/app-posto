@@ -8,6 +8,7 @@ import {
     utils_fmt_money_with_prefix,
     utils_show_hide_section,
     TRANSACAO_PENDENTE,
+    TRANSACAO_EXPIRADA,
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
     SECTION_STATE_NO_DATA,
@@ -16,6 +17,7 @@ import {
 import {
     be_mod_utils_get_pending_transactions,
     be_mod_utils_get_transaction_detail,
+    be_mod_utils_update_transaction,
 } from "backend/be_mod_utils";
 
 
@@ -26,6 +28,8 @@ let g_transacoes_pendentes = [
     {ui: "#textValorAPagar", type: "text", db: "valor_a_pagar", format: fmt_valor_a_pagar},
     {ui: "#buttonDetalhes", type: "button", onClick: onclick_ver_detalhes},
 ];
+
+const max_hours_of_pending_transactions = 5; // time in hours
 
 
 function fmt_cod_bomba(val) {
@@ -58,6 +62,17 @@ async function load_pending_transactions() {
     });
 
     let transacoes_pendentes = await be_mod_utils_get_pending_transactions(TRANSACAO_PENDENTE);
+
+    let now = new Date();
+    transacoes_pendentes = transacoes_pendentes.filter( (transacao) => {
+        let item_time = new Date(transacao.data);
+        let time_diff = Math.abs((now.getTime() - item_time.getTime())/(1000*60*60));
+
+        if (time_diff > max_hours_of_pending_transactions)
+            be_mod_utils_update_transaction(transacao._id, TRANSACAO_EXPIRADA);
+        else
+            return transacao;
+    });
 
     $w("#repeaterTransacoesPendentes").data = transacoes_pendentes;
 
