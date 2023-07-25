@@ -54,6 +54,7 @@ async function set_saldo() {
     $w("#textUsarSaldoDescontar").text = "Descontar " + utils_fmt_money_with_prefix(saldo);
     porcentagem_cashback = await be_mod_utils_get_posto_pct_cashback(posto_id);
     $w("#textCashback").text = "Ganhar " + utils_fmt_money_with_prefix(calculate_caskback_value());
+    set_resume_values(true);
 }
 
 function calculate_caskback_value() {
@@ -133,7 +134,6 @@ $w.onReady(function () {
     set_sections(SECTION_STATE_DATA);
     utils_config_items($w, g_confirmar_pagamento);
     set_saldo();
-    set_resume_values(true);
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')
