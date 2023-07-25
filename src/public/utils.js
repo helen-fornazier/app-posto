@@ -16,6 +16,7 @@ export const SECTION_STATE_NO_DATA="no_data";	// empty (no transactions)
 export const TRANSACAO_PENDENTE = "pendente";
 export const TRANSACAO_APROVADA = "aprovada";
 export const TRANSACAO_RECUSADA = "recusada";
+export const TRANSACAO_EXPIRADA = "expirada";
 
 const QTDE_ITENS_RESUMO = 10; // max number of transactions on resume
 

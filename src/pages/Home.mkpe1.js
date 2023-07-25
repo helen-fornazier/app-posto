@@ -12,11 +12,14 @@ import {
     utils_get_saldo,
     utils_onclick_show_hide_saldo,
     SECTION_STATE_LOADING,
+    TRANSACAO_PENDENTE,
+    TRANSACAO_EXPIRADA,
 } from 'public/utils';
 
 import {
     be_mod_utils_cadastrar_cliente,
-    be_mod_utils_check_is_funcionario
+    be_mod_utils_check_is_funcionario,
+    be_mod_utils_check_have_pending_transactions,
 } from "backend/be_mod_utils";
 
 let saldo;
@@ -43,6 +46,7 @@ async function query_database() {
     }
 
     let cliente_on_database = await be_mod_utils_cadastrar_cliente(member);
+    be_mod_utils_check_have_pending_transactions(member._id, TRANSACAO_PENDENTE, TRANSACAO_EXPIRADA);
     /*if (!cliente_on_database)
         console.log("Cadastrado com sucesso!");
     else

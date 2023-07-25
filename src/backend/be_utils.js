@@ -164,6 +164,22 @@ export async function be_utils_get_posto_pct_cashback(posto_id) {
     return pct_cashback;
 }
 
+export async function be_utils_check_have_pending_transactions(cliente_id, transaction_status, transaction_status_update) {
+    let transacoes = await wixData.query(BD_TRANSACOES)
+                    .eq("situacao", transaction_status)
+                    .eq("clienteId", cliente_id)
+                    .find({suppressAuth: true})
+                    .then((results) => {
+                        return results["items"];
+                    });
+    if (!transacoes["length"])
+        console.log("Sem transacoes pendentes");
+    else
+        transacoes.forEach(transacao => be_utils_update_transaction(transacao._id, transaction_status_update));
+    
+    return;
+}
+
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {
@@ -213,7 +229,7 @@ export async function be_utils_check_is_funcionario(funcionario_email) {
 
 // -------------- database update functions --------------------
 export async function be_utils_update_transaction(transaction_id, transaction_status) {
-    //transaction_status = "aprovada" || "recusada"
+    //transaction_status = "aprovada" || "recusada" || "expirada"
     const item = await wixData.get(BD_TRANSACOES, transaction_id);
     item.situacao = transaction_status;
 
