@@ -59,6 +59,7 @@ function approve_wait() {
                 stop_wait_change();
             } else if (result.situacao == TRANSACAO_RECUSADA){
                 console.log("TRANSACAO RECUSADA");
+                $w("#textOperacaoCancelada").text = "Operação cancelada"
                 set_sections(SECTION_STATE_NO_DATA);
                 stop_wait_change();
             }
@@ -66,6 +67,7 @@ function approve_wait() {
         elapsed_time += update_interval;
         if (elapsed_time >= time_limit) {
             console.log("TRANSACAO EXPIRADA");
+            $w("#textOperacaoCancelada").text = "Tempo limite excedido"
             be_mod_utils_update_transaction(transaction_id, TRANSACAO_EXPIRADA);
             set_sections(SECTION_STATE_NO_DATA);
             stop_wait_change();
