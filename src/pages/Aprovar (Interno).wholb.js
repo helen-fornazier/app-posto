@@ -22,7 +22,7 @@ import {
 let g_transacoes_pendentes = [
     {ui: "#textClientName", type: "text", db: "client_name"},
     {ui: "#textCodBomba", type: "text", db: "cod_bomba", format: fmt_cod_bomba},
-    {ui: "#textData", type: "text", db: "data", format: utils_fmt_date},
+    {ui: "#textData", type: "text", db: "data", format: fmt_date_with_hour},
     {ui: "#textValorAPagar", type: "text", db: "valor_a_pagar", format: fmt_valor_a_pagar},
     {ui: "#buttonDetalhes", type: "button", onClick: onclick_ver_detalhes},
 ];
@@ -34,6 +34,15 @@ function fmt_cod_bomba(val) {
 
 function fmt_valor_a_pagar(val) {
     return "Valor a pagar: " + utils_fmt_money_with_prefix(val);
+}
+
+function fmt_date_with_hour(val) {
+    let date = utils_fmt_date(val);
+    let hour = val.getHours().toString().padStart(2, '0');
+    let minutes = val.getMinutes().toString().padStart(2, '0');
+    let seconds = val.getSeconds().toString().padStart(2, '0');
+
+    return `${date} - ${hour}:${minutes}:${seconds}`;
 }
 
 async function onclick_ver_detalhes(event) {
