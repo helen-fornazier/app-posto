@@ -253,13 +253,10 @@ async function get_client_infos(cliente_id) {
 
 async function get_client_name(cliente_id) {
     let cliente = (await get_client_infos(cliente_id))["items"][0];
-    let cliente_nome;
-    if (cliente.firstName && cliente.lastName)
-        cliente_nome = cliente.firstName + " " + cliente.lastName;
-    else if (cliente.firstName)
-        cliente_nome = cliente.firstName;
-    else 
-        cliente_nome = "undefined";
+    let cliente_firstName = cliente?.firstName ?? "";
+    let cliente_lastName = cliente?.lastName ?? "";
+    let cliente_nome = [cliente_firstName, cliente_lastName].filter(Boolean).join(' ');
+    cliente_nome = cliente_nome ? cliente_nome : cliente.loginEmail;
 
     return cliente_nome;
 }
