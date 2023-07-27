@@ -1,4 +1,5 @@
-import { be_mod_utils_get_history } from "backend/be_mod_utils";
+import { currentMember } from 'wix-members';
+import { be_mod_utils_get_history, be_mod_utils_get_saldo } from "backend/be_mod_utils";
 
 const IMG_PAGAMENTO_SALDO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
 const IMG_CASHBACK = "https://static.wixstatic.com/media/88a711_d7f511ac9b884bbca345e15d9d1703fa~mv2.png";
@@ -12,24 +13,51 @@ export const SECTION_STATE_LOADING="loading";	// loading
 export const SECTION_STATE_DATA="data";			// true for transactions
 export const SECTION_STATE_NO_DATA="no_data";	// empty (no transactions)
 
-const QTDE_ITENS_RESUMO = 2; // max number of transactions on resume
+export const TRANSACAO_PENDENTE = "pendente";
+export const TRANSACAO_APROVADA = "aprovada";
+export const TRANSACAO_RECUSADA = "recusada";
+export const TRANSACAO_EXPIRADA = "expirada";
+
+const QTDE_ITENS_RESUMO = 10; // max number of transactions on resume
 
 // transaction history repeater: constant on utils to be used by 'Extrato' and 'Home' pages
 export let g_hist_map = [
 	{ui: "#textHistDate", db: "data", type: "text", format: utils_fmt_date},
 	{ui: "#imageHist", db: "tipo", type: "src", format: utils_fmt_history_img},
-	{ui: "#textHistValue", db: "db", type: "text", format: utils_fmt_money_with_prefix},
+	{ui: "#textHistValue", db: "db", type: "html", format: utils_fmt_hist_value},
 	{ui: "#textHistDesc", db: "nome", type: "text"},
-	{ui: "#textHistPaymentType", db: "tipo", type: "text", format: utils_fmt_history_type}
+	{ui: "#textHistPaymentType", db: "tipo", type: "text", format: utils_fmt_history_type},
+	{ui: "#textHistTotalValue", db: "total", type: "text", format: utils_fmt_hist_total_value}
 ];
 
 export const hist_filters = {"date": "#dropdownFilterDate", "transaction": "#dropdownFilterTransaction"};
 
+export const app_colors = {
+	"main": "#DCF424", 
+	"blue": "#0C2538",
+	"blue_gray_opacity": "rgba(58, 80, 96, 0.05)",
+	"red": "#E35D3D",
+	"transparent": "rgba(58, 80, 96, 0)"
+}
+
+export const hide_amount = "****";
 
 // -------------- fmt functions --------------------
 export function utils_fmt_money_with_prefix(value) {
 	value = utils_fmt_money(value);
 	return "R$ " + (value || "0,00")
+}
+
+export function utils_fmt_hist_value(value) {
+	let fmt_value = utils_fmt_money_with_prefix(value);
+	let amount = fmt_value.includes("-") ? fmt_value.replace('-', '') : fmt_value;
+	if (value < 0)
+		return `<h4 style="color:${app_colors.red};" class="wixui-rich-text__text">- ${amount}</h4>`
+	return `<h4 class="wixui-rich-text__text">+ ${amount}</h4>`
+}
+
+export function utils_fmt_hist_total_value(value) {
+	return "Valor abastecimento: " + utils_fmt_money_with_prefix(value);
 }
 
 export function utils_fmt_money(val) { // receive in cents or in string in Locale
@@ -79,11 +107,18 @@ export function utils_fmt_history_type(val) {
 }
 
 export function utils_fmt_only_number(val) {
+	if (val == 0)
+		return 0;
+
 	val = val ?? "";
 
 	if (parseInt(val[0])){
 		return val[0];
 	}
+}
+
+export async function utils_fmt_saldo() {
+	$w("#textSaldoEmConta").text = utils_fmt_money_with_prefix(await utils_get_saldo());
 }
 
 
@@ -135,10 +170,17 @@ export function utils_config_items($w, config, data) {
 
 		if (item.format && $w(k).onInput) {
 			$w(k).onInput( (event) => {
-				if (event.target.value)
+				if (event.target.value){
 					$w(k)[type] = item.format(event.target.value);
+					if (event.target.value && item.onInput) {
+						item.onInput(event, val)
+					}
+				}
 			});
 		}
+
+		if (item.onKeyPress)
+			$w(k).onKeyPress( (event) => { item.onKeyPress(event) });
 	}
 }
 
@@ -173,8 +215,10 @@ export async function utils_load_history(_is_resumed, _filter) {
         utils_config_items($item, g_hist_map, itemData);
         utils_set_sections_history(SECTION_STATE_DATA);
     });
+
+	let member = await utils_get_member();
     
-    let history = (await be_mod_utils_get_history(_filter));
+    let history = (await be_mod_utils_get_history(_filter, member._id, TRANSACAO_APROVADA));
 
 	if(_is_resumed)
     	history = history.length >= QTDE_ITENS_RESUMO ? history.slice(0 , QTDE_ITENS_RESUMO) : history; // limits items on resume
@@ -194,6 +238,25 @@ export function utils_get_elements_values(map_elements) {
 	}
 
 	return _filter;
+}
+
+export async function utils_get_member() {
+	let member = await currentMember.getMember({fieldsets: [ 'FULL' ]});
+	return member;
+}
+
+export async function  utils_get_saldo() {
+	let member = await currentMember.getMember({fieldsets: [ 'FULL' ]});
+	let saldo = await be_mod_utils_get_saldo(member._id);
+
+	return saldo;
+}
+
+export function utils_onclick_show_hide_saldo(saldo_total) {
+	if ($w("#textSaldoEmConta").text == hide_amount)
+	    $w("#textSaldoEmConta").text = utils_fmt_money_with_prefix(saldo_total);
+	else
+		$w("#textSaldoEmConta").text = hide_amount;
 }
 
 
