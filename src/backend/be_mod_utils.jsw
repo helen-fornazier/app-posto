@@ -11,6 +11,7 @@ import {
 	be_utils_check_is_funcionario,
 	be_utils_get_posto_pct_cashback,
 	be_utils_check_have_pending_transactions,
+	be_utils_get_client_name,
 } from 'backend/be_utils.js';
 
 
@@ -60,4 +61,8 @@ export function be_mod_utils_get_posto_pct_cashback(posto_id) {
 
 export function be_mod_utils_check_have_pending_transactions(cliente_id, transaction_status, transaction_status_update) {
 	return be_utils_check_have_pending_transactions(cliente_id, transaction_status, transaction_status_update);
+}
+
+export function be_mod_utils_get_client_name(cliente_id) {
+	return be_utils_get_client_name(cliente_id);
 }

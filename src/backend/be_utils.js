@@ -110,7 +110,7 @@ export async function be_utils_get_pending_transactions(transaction_status) {
                             });
     
     let transacoes_infos = await Promise.all(transacoes.map(async (transacao) => {
-        let cliente_nome = await get_client_name(transacao.clienteId);
+        let cliente_nome = await be_utils_get_client_name(transacao.clienteId);
         return {
             "_id": transacao._id,
             "client_name": cliente_nome,
@@ -131,11 +131,9 @@ export async function be_utils_get_transaction_detail(transaction_id) {
         .then((results) => {
             return results["items"][0];
     })
-    let cliente_nome = await get_client_name(transacao.clienteId);
 
     let selected_transaction_information = {
         _id: transacao._id,
-        nome: cliente_nome,
         tipo_combustivel: transacao.tipoCombustivel,
         cod_bomba: transacao.codBomba,
         data: transacao._createdDate,
@@ -147,7 +145,7 @@ export async function be_utils_get_transaction_detail(transaction_id) {
         cliente_id: transacao.clienteId,
     }
 
-    // return [{nome, tipo_combustivel, cod_bomba, data, hora, valor, is_cashback, saldo_usado, valor_a_pagar}]
+    // return [{tipo_combustivel, cod_bomba, data, hora, valor, is_cashback, saldo_usado, valor_a_pagar}]
 
     return selected_transaction_information;
 }
@@ -178,6 +176,16 @@ export async function be_utils_check_have_pending_transactions(cliente_id, trans
         transacoes.forEach(transacao => be_utils_update_transaction(transacao._id, transaction_status_update));
     
     return;
+}
+
+export async function be_utils_get_client_name(cliente_id) {
+    let cliente = (await get_client_infos(cliente_id))["items"][0];
+    let cliente_firstName = cliente?.firstName ?? "";
+    let cliente_lastName = cliente?.lastName ?? "";
+    let cliente_nome = [cliente_firstName, cliente_lastName].filter(Boolean).join(' ');
+    cliente_nome = cliente_nome ? cliente_nome : cliente.loginEmail;
+
+    return cliente_nome;
 }
 
 
@@ -257,16 +265,6 @@ async function get_client_infos(cliente_id) {
                 .then((results) => {
                     return results;
                 })
-}
-
-async function get_client_name(cliente_id) {
-    let cliente = (await get_client_infos(cliente_id))["items"][0];
-    let cliente_firstName = cliente?.firstName ?? "";
-    let cliente_lastName = cliente?.lastName ?? "";
-    let cliente_nome = [cliente_firstName, cliente_lastName].filter(Boolean).join(' ');
-    cliente_nome = cliente_nome ? cliente_nome : cliente.loginEmail;
-
-    return cliente_nome;
 }
 
 async function get_transaction_infos(transaction_id) {
