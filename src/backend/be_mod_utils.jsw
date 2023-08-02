@@ -15,8 +15,8 @@ import {
 } from 'backend/be_utils.js';
 
 
-export function be_mod_utils_get_history(_filter, member_id, transaction_status) {
-	return be_utils_get_history(_filter, member_id, transaction_status);
+export function be_mod_utils_get_history(member_id, transaction_status) {
+	return be_utils_get_history(member_id, transaction_status);
 }
 
 export function be_mod_utils_get_bombas_code(cod_bomba) {

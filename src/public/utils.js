@@ -210,7 +210,7 @@ export function utils_set_sections_history(state) {
     }
 }
 
-export async function utils_load_history(_is_resumed, _filter) {
+export async function utils_load_history(_is_resumed) {
     $w("#repeaterHist").onItemReady( ($item, itemData, index) => {
         utils_config_items($item, g_hist_map, itemData);
         utils_set_sections_history(SECTION_STATE_DATA);
@@ -218,7 +218,7 @@ export async function utils_load_history(_is_resumed, _filter) {
 
 	let member = await utils_get_member();
     
-    let history = (await be_mod_utils_get_history(_filter, member._id, TRANSACAO_APROVADA));
+    let history = (await be_mod_utils_get_history(member._id, TRANSACAO_APROVADA));
 
 	if(_is_resumed)
     	history = history.length >= QTDE_ITENS_RESUMO ? history.slice(0 , QTDE_ITENS_RESUMO) : history; // limits items on resume
@@ -227,6 +227,8 @@ export async function utils_load_history(_is_resumed, _filter) {
     
     if (!history.length)
         utils_set_sections_history(SECTION_STATE_NO_DATA);
+
+	return history;
 }
 
 export function utils_get_elements_values(map_elements) {

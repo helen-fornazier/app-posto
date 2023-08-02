@@ -65,7 +65,7 @@ $w.onReady(function () {
     $w("#textSaldoEmConta").text = "";
     utils_set_sections_history(SECTION_STATE_LOADING);
     search_client_on_databases();
-    utils_load_history(true, "");
+    utils_load_history(true);
 	fill_member_data();
     save_saldo();
 

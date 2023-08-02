@@ -6,15 +6,9 @@ export const BD_POSTOS = "postos";
 export const BD_BOMBAS = "bombas";
 export const BD_FUNCIONARIOS = "funcionarios";
 
-const hist_filter_transaction = ["cashback", "pagamento"];
-const hist_filter_period = {"semana": 7, "quinzena": 15, "mes": 30, "trimestre": 90};
-
 
 // -------------- database query functions --------------------
-export async function be_utils_get_history(_filter, member_id, transaction_status) {
-    const _filter_date = _filter["date"]
-    const filter_transaction = _filter["transaction"]
-
+export async function be_utils_get_history(member_id, transaction_status) {
     let transacoes = await wixData.query(BD_TRANSACOES)
                             .eq("clienteId", member_id)
                             .eq("situacao", transaction_status)
@@ -41,27 +35,6 @@ export async function be_utils_get_history(_filter, member_id, transaction_statu
         };
     });
 
-    if (!_filter)
-        return hist;
-
-
-    if (hist_filter_transaction.includes(filter_transaction)){
-        hist = hist.filter((value) => value.tipo.includes(filter_transaction));
-    }
-    
-    if (Object.keys(hist_filter_period).includes(_filter_date)){
-        const now = new Date();
-        let period_of_time = hist_filter_period[_filter_date];
-
-        hist = hist.filter((value) => {
-            const item_time = new Date(value.data);
-            let time_diff = Math.abs((now.getTime() - item_time.getTime())/(1000*60*60*24)); // converting miliseconds to days
-            if (time_diff <= period_of_time)
-                return value;
-        })
-
-    }
-    
     // returns [{_id, data, tipo, db, nome, total}, ...]
     return hist;
 }
