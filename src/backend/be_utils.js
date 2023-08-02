@@ -9,21 +9,18 @@ export const BD_FUNCIONARIOS = "funcionarios";
 
 // -------------- database query functions --------------------
 export async function be_utils_get_history(member_id, transaction_status) {
-    let [transacoes, postos] = await Promise.all([
+    let [transacoes_p, postos_p] = await Promise.all([
         wixData.query(BD_TRANSACOES)
             .eq("clienteId", member_id)
             .eq("situacao", transaction_status)
-            .find({suppressAuth: true})
-            .then((results) => {
-                return results["items"];
-            }),
+            .find({suppressAuth: true}),
       
         wixData.query(BD_POSTOS)
             .find({suppressAuth: true})
-            .then((results) => {
-                return results["items"];
-            })
     ]);
+
+    let transacoes = transacoes_p.items;
+    let postos = postos_p.items;
 
     let hist = transacoes.map((transacao) => {
         let posto = postos.find(posto => posto._id === transacao.postoId);
