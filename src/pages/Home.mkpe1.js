@@ -37,7 +37,7 @@ async function fill_member_data() {
     utils_fmt_saldo();
 }
 
-async function query_database() {
+async function search_client_on_databases() {
     let member = (await utils_get_member());
     let is_funcionario = await be_mod_utils_check_is_funcionario(member.loginEmail);
     if (is_funcionario){
@@ -64,7 +64,7 @@ $w.onReady(function () {
     wixStorage.local.clear();
     $w("#textSaldoEmConta").text = "";
     utils_set_sections_history(SECTION_STATE_LOADING);
-    query_database();
+    search_client_on_databases();
     utils_load_history(true, "");
 	fill_member_data();
     save_saldo();
