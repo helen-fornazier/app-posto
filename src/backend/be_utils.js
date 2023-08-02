@@ -39,19 +39,16 @@ export async function be_utils_get_history(member_id, transaction_status) {
 }
 
 export async function be_utils_get_bombas_code () {
-    let [bombas, postos] = await Promise.all([
+    let [bombas_p, postos_p] = await Promise.all([
         wixData.query(BD_BOMBAS)
-            .find({suppressAuth: true})
-            .then((results) => {
-                return results["items"];
-            }),
-      
+            .find({suppressAuth: true}),
+
         wixData.query(BD_POSTOS)
             .find({suppressAuth: true})
-            .then((results) => {
-                return results["items"];
-            })
     ]);
+
+    let bombas = bombas_p.items;
+    let postos = postos_p.items;
 
     let possible_bombas = bombas;
 
