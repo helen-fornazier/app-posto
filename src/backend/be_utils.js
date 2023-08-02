@@ -198,21 +198,13 @@ export async function be_utils_cadastrar_cliente(cliente) {
     let cliente_on_database = await get_client_saldo(cliente._id);
     if (cliente_on_database["length"])
         return cliente_on_database["items"][0];
-    else{
-        let cliente_db = {
-            _id: cliente._id,
-            saldo: 0
-        }
-        await wixData.insert(BD_CLIENTE, cliente_db)
-        .then((result) => {
-            const itemInserido = result;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+
+    let cliente_db = {
+        _id: cliente._id,
+        saldo: 0
     }
-    
-    return
+
+    await wixData.insert(BD_CLIENTE, cliente_db)
 }
 
 
