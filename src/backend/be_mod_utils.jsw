@@ -19,8 +19,8 @@ export function be_mod_utils_get_history(member_id, transaction_status) {
 	return be_utils_get_history(member_id, transaction_status);
 }
 
-export function be_mod_utils_get_bombas_code(cod_bomba) {
-	return be_utils_get_bombas_code (cod_bomba);
+export function be_mod_utils_get_bombas_code() {
+	return be_utils_get_bombas_code ();
 }
 
 export function be_mod_utils_cadastrar_transacao(transacao) {

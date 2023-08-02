@@ -34,6 +34,10 @@ let g_bombas_map = [
 
 const map_bombas = {"bomba1": "#inputCodBomba1", "bomba2": "#inputCodBomba2", "bomba3": "#inputCodBomba3", "bomba4": "#inputCodBomba4", "bomba5": "#inputCodBomba5"};
 
+const no_digits = "-----";
+
+let all_bombas = [];
+
 
 function set_sections(state) {
     switch (state){
@@ -58,6 +62,16 @@ function onclick_bomba_selected(event) {
     save_to_local_storage(cod_bomba);
 }
 
+function filter_possible_bombas(cod_bomba) {
+    if (cod_bomba == no_digits) 
+        return all_bombas;
+    return all_bombas.filter(bomba => {
+        return !Array.from(cod_bomba).some((char, i) => {
+            return char !== '-' && char !== bomba.codBomba[i];
+        });
+    });
+}
+
 async function get_bomba_suggestion() {
     $w("#boxItemRepeaterPosto").style.borderColor = app_colors.transparent;
     set_sections (SECTION_STATE_LOADING);
@@ -75,7 +89,7 @@ async function get_bomba_suggestion() {
         utils_config_items($item, g_bombas_map, itemData);
     });
 
-    let possible_bombas = await be_mod_utils_get_bombas_code(cod_bomba)
+    let possible_bombas = filter_possible_bombas(cod_bomba);
     $w("#repeaterBombas").data = possible_bombas;
 
     if (possible_bombas.length == 1){
@@ -104,6 +118,10 @@ function onInput_go_to_next_bomba_input(event) {
             break;
         case "4":
             $w("#inputCodBomba5").focus();
+            break;
+        case "5":
+            $w("#inputCodBomba5").blur();  // necessary to activate onChange event (on prev inputs, when focus change onChange is called)
+            $w("#inputCodBomba5").focus(); // after activate onChange, focus is returned to input
             break;
         default:
             break;
@@ -134,10 +152,9 @@ function onKeyPress_go_to_prev_bomba_input(event) {
 }
 
 async function save_to_local_storage(cod_bomba) {
-    be_mod_utils_get_bombas_code(cod_bomba).then((bomba_informations) => {
-        wixStorage.local.setItem('bomba_information', JSON.stringify(bomba_informations[0]));
-        $w("#buttonCodBombaAvancar").enable();
-    });
+    let bomba = filter_possible_bombas(cod_bomba);
+    wixStorage.local.setItem('bomba_information', JSON.stringify(bomba[0]));
+    $w("#buttonCodBombaAvancar").enable();
 }
 
 function render_values() {
@@ -147,17 +164,24 @@ function render_values() {
             $w(map_bombas[`bomba${index + 1}`]).value = char;
         });
         $w("#buttonCodBombaAvancar").enable();
+        $w("#inputCodBomba5").focus();
     }
     get_bomba_suggestion();
+}
+
+async function get_all_bombas() {
+    all_bombas = await be_mod_utils_get_bombas_code();
+    render_values();
 }
 
 $w.onReady(function () {
     // while the person is typing or not select a 'posto' yet, disable option 'Avancar'
     $w("#buttonCodBombaAvancar").disable();
+    get_all_bombas();
     $w("#inputCodBomba1").focus();
     set_sections (SECTION_STATE_LOADING);
     utils_config_items($w, g_codigo_bomba);
-    render_values();
+
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')

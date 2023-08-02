@@ -41,7 +41,7 @@ export async function be_utils_get_history(member_id, transaction_status) {
     return hist;
 }
 
-export async function be_utils_get_bombas_code (code_bomba) {
+export async function be_utils_get_bombas_code () {
     let [bombas, postos] = await Promise.all([
         wixData.query(BD_BOMBAS)
             .find({suppressAuth: true})
@@ -56,11 +56,7 @@ export async function be_utils_get_bombas_code (code_bomba) {
             })
     ]);
 
-    let possible_bombas = bombas.filter(bomba => {
-        return !Array.from(code_bomba).some((char, i) => {
-            return char !== '-' && char !== bomba.codBomba[i];
-        });
-    });
+    let possible_bombas = bombas;
 
     let posto_and_bomba_informations = possible_bombas.map(bomba => {
         let posto = postos.find(posto => posto._id === bomba.postoId);
