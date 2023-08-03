@@ -106,48 +106,23 @@ async function get_bomba_suggestion() {
 function onInput_go_to_next_bomba_input(event) {
     let input = event.target.id;
     let num_bomba = input.match(/\d+/g)[0];
-    switch (num_bomba) {
-        case "1":
-            $w("#inputCodBomba2").focus();
-            break;
-        case "2":
-            $w("#inputCodBomba3").focus();
-            break;
-        case "3":
-            $w("#inputCodBomba4").focus();
-            break;
-        case "4":
-            $w("#inputCodBomba5").focus();
-            break;
-        case "5":
-            $w("#inputCodBomba5").blur();  // necessary to activate onChange event (on prev inputs, when focus change onChange is called)
-            $w("#inputCodBomba5").focus(); // after activate onChange, focus is returned to input
-            break;
-        default:
-            break;
+    num_bomba = parseInt(num_bomba);
+    if (num_bomba == 5){
+        $w(g_codigo_bomba[(num_bomba-1)].ui).blur();
+        $w(g_codigo_bomba[(num_bomba-1)].ui).focus();
+        return 
     }
+    $w(g_codigo_bomba[num_bomba].ui).focus();
 }
 
 function onKeyPress_go_to_prev_bomba_input(event) {
     if (event.key == "Backspace"){
         let input = event.target.id;
         let num_bomba = input.match(/\d+/g)[0];
-        switch (num_bomba) {
-            case "2":
-                $w("#inputCodBomba1").focus();
-                break;
-            case "3":
-                $w("#inputCodBomba2").focus();
-                break;
-            case "4":
-                $w("#inputCodBomba3").focus();
-                break;
-            case "5":
-                $w("#inputCodBomba4").focus();
-                break;
-            default:
-                break;
-        }
+        num_bomba = parseInt(num_bomba);
+        if (num_bomba == 1)
+            return 
+        $w(g_codigo_bomba[(num_bomba-2)].ui).focus();
     }
 }
 
