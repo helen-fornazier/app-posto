@@ -223,18 +223,12 @@ async function get_client_saldo(cliente_id) {
     return await wixData.query(BD_CLIENTE)
                 .eq("_id", cliente_id)
                 .find({suppressAuth: true})
-                .then((results) => {
-                    return results;
-                })
 }
 
 async function get_client_infos(cliente_id) {
     return await wixData.query("Members/FullData")
                 .eq("_id", cliente_id)
                 .find({suppressAuth: true})
-                .then((results) => {
-                    return results;
-                })
 }
 
 async function get_transaction_infos(transaction_id) {
