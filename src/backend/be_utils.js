@@ -125,13 +125,11 @@ export async function be_utils_get_posto_pct_cashback(posto_id) {
 }
 
 export async function be_utils_check_have_pending_transactions(cliente_id, transaction_status, transaction_status_update) {
-    let transacoes = await wixData.query(BD_TRANSACOES)
+    let transacoes = (await wixData.query(BD_TRANSACOES)
                     .eq("situacao", transaction_status)
                     .eq("clienteId", cliente_id)
-                    .find({suppressAuth: true})
-                    .then((results) => {
-                        return results["items"];
-                    });
+                    .find({suppressAuth: true}))["items"];
+
     if (!transacoes["length"])
         console.log("Sem transacoes pendentes");
     else
@@ -214,12 +212,9 @@ async function get_client_infos(cliente_id) {
 }
 
 async function get_transaction_infos(transaction_id) {
-    let transacao = await wixData.query(BD_TRANSACOES)
+    let transacao = (await wixData.query(BD_TRANSACOES)
         .eq("_id", transaction_id)
-        .find({suppressAuth: true})
-        .then((results) => {
-            return results["items"][0];
-        });
+        .find({suppressAuth: true}))["items"][0];
     
     return transacao;
 }
