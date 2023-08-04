@@ -159,15 +159,7 @@ export async function be_utils_get_client_name(cliente_id) {
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {
-    return wixData.insert(BD_TRANSACOES, transacao)
-    .then((result) => {
-        const itemInserido = result;
-        return result._id;
-    })
-    .catch((error) => {
-        console.error(error);
-    });
-
+    return (await wixData.insert(BD_TRANSACOES, transacao))._id;
 }
 
 export async function be_utils_cadastrar_cliente(cliente) {
