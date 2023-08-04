@@ -30,7 +30,7 @@ let g_transacoes_pendentes = [
     {ui: "#buttonDetalhes", type: "button", onClick: onclick_ver_detalhes},
 ];
 
-const max_hours_of_pending_transactions = 5; // time in hours
+const g_max_hours_of_pending_transactions = 5; // time in hours
 
 
 function fmt_cod_bomba(val) {
@@ -69,7 +69,7 @@ async function load_pending_transactions() {
         let item_time = new Date(transacao.data);
         let time_diff = Math.abs((now.getTime() - item_time.getTime())/(1000*60*60));
 
-        if (time_diff > max_hours_of_pending_transactions)
+        if (time_diff > g_max_hours_of_pending_transactions)
             be_mod_utils_update_transaction(transacao._id, TRANSACAO_EXPIRADA);
         else
             return transacao;
