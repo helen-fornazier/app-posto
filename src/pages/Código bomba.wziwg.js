@@ -32,11 +32,11 @@ let g_bombas_map = [
     {ui: "#boxItemRepeaterPosto", onClick: onclick_bomba_selected}
 ];
 
-const map_bombas = {"bomba1": "#inputCodBomba1", "bomba2": "#inputCodBomba2", "bomba3": "#inputCodBomba3", "bomba4": "#inputCodBomba4", "bomba5": "#inputCodBomba5"};
+const g_map_bombas = {"bomba1": "#inputCodBomba1", "bomba2": "#inputCodBomba2", "bomba3": "#inputCodBomba3", "bomba4": "#inputCodBomba4", "bomba5": "#inputCodBomba5"};
 
-const no_digits = "-----";
+const g_no_digits = "-----";
 
-let all_bombas = [];
+let g_all_bombas = [];
 
 
 function set_sections(state) {
@@ -55,7 +55,7 @@ function onclick_bomba_selected(event) {
     let cod_bomba = $item("#textNomePosto").text.split(" - ")[0];
 
     Array.from(cod_bomba).forEach((char, index) => {
-        $w(map_bombas[`bomba${index + 1}`]).value = char;
+        $w(g_map_bombas[`bomba${index + 1}`]).value = char;
     });
 
     get_bomba_suggestion(); // to update the suggestions
@@ -63,9 +63,9 @@ function onclick_bomba_selected(event) {
 }
 
 function filter_possible_bombas(cod_bomba) {
-    if (cod_bomba == no_digits) 
-        return all_bombas;
-    return all_bombas.filter(bomba => {
+    if (cod_bomba == g_no_digits) 
+        return g_all_bombas;
+    return g_all_bombas.filter(bomba => {
         return !Array.from(cod_bomba).some((char, i) => {
             return char !== '-' && char !== bomba.codBomba[i];
         });
@@ -77,7 +77,7 @@ async function get_bomba_suggestion() {
     set_sections (SECTION_STATE_LOADING);
 
     // catch and treat 'bomba' information
-    let bomba_values = utils_get_elements_values(map_bombas);
+    let bomba_values = utils_get_elements_values(g_map_bombas);
     let cod_bomba = Object.values(bomba_values).map(val => val === '' ? '-' : val).join('');
 
     if (cod_bomba.includes('-')){
@@ -136,7 +136,7 @@ function render_values() {
     let cod_bomba = JSON.parse(wixStorage.local.getItem('bomba_information'))?.codBomba ?? "";
     if (cod_bomba) {
         Array.from(cod_bomba).forEach((char, index) => {
-            $w(map_bombas[`bomba${index + 1}`]).value = char;
+            $w(g_map_bombas[`bomba${index + 1}`]).value = char;
         });
         $w("#buttonCodBombaAvancar").enable();
         $w("#inputCodBomba5").focus();
@@ -145,7 +145,7 @@ function render_values() {
 }
 
 async function get_all_bombas() {
-    all_bombas = await be_mod_utils_get_bombas_code();
+    g_all_bombas = await be_mod_utils_get_bombas_code();
     render_values();
 }
 
