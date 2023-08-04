@@ -21,7 +21,7 @@ export const TRANSACAO_EXPIRADA = "expirada";
 const QTDE_ITENS_RESUMO = 10; // max number of transactions on resume
 
 // transaction history repeater: constant on utils to be used by 'Extrato' and 'Home' pages
-export let g_hist_map = [
+export let utils_g_hist_map = [
 	{ui: "#textHistDate", db: "data", type: "text", format: utils_fmt_date},
 	{ui: "#imageHist", db: "tipo", type: "src", format: utils_fmt_history_img},
 	{ui: "#textHistValue", db: "db", type: "html", format: utils_fmt_hist_value},
@@ -30,9 +30,7 @@ export let g_hist_map = [
 	{ui: "#textHistTotalValue", db: "total", type: "text", format: utils_fmt_hist_total_value}
 ];
 
-export const hist_filters = {"date": "#dropdownFilterDate", "transaction": "#dropdownFilterTransaction"};
-
-export const app_colors = {
+export const APP_COLORS = {
 	"main": "#DCF424", 
 	"blue": "#0C2538",
 	"blue_gray_opacity": "rgba(58, 80, 96, 0.05)",
@@ -40,7 +38,7 @@ export const app_colors = {
 	"transparent": "rgba(58, 80, 96, 0)"
 }
 
-export const hide_amount = "****";
+export const HIDE_AMOUNT = "****";
 
 // -------------- fmt functions --------------------
 export function utils_fmt_money_with_prefix(value) {
@@ -52,7 +50,7 @@ export function utils_fmt_hist_value(value) {
 	let fmt_value = utils_fmt_money_with_prefix(value);
 	let amount = fmt_value.includes("-") ? fmt_value.replace('-', '') : fmt_value;
 	if (value < 0)
-		return `<h4 style="color:${app_colors.red};" class="wixui-rich-text__text">- ${amount}</h4>`
+		return `<h4 style="color:${APP_COLORS.red};" class="wixui-rich-text__text">- ${amount}</h4>`
 	return `<h4 class="wixui-rich-text__text">+ ${amount}</h4>`
 }
 
@@ -212,7 +210,7 @@ export function utils_set_sections_history(state) {
 
 export async function utils_load_history(_is_resumed) {
     $w("#repeaterHist").onItemReady( ($item, itemData, index) => {
-        utils_config_items($item, g_hist_map, itemData);
+        utils_config_items($item, utils_g_hist_map, itemData);
         utils_set_sections_history(SECTION_STATE_DATA);
     });
 
@@ -254,10 +252,10 @@ export async function  utils_get_saldo() {
 }
 
 export function utils_onclick_show_hide_saldo(saldo_total) {
-	if ($w("#textSaldoEmConta").text == hide_amount)
+	if ($w("#textSaldoEmConta").text == HIDE_AMOUNT)
 	    $w("#textSaldoEmConta").text = utils_fmt_money_with_prefix(saldo_total);
 	else
-		$w("#textSaldoEmConta").text = hide_amount;
+		$w("#textSaldoEmConta").text = HIDE_AMOUNT;
 }
 
 

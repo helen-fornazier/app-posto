@@ -9,7 +9,7 @@ import { utils_config_items,
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
     SECTION_STATE_NO_DATA,
-    app_colors,
+    APP_COLORS,
 } from "public/utils";
 
 import {
@@ -73,7 +73,7 @@ function filter_possible_bombas(cod_bomba) {
 }
 
 async function get_bomba_suggestion() {
-    $w("#boxItemRepeaterPosto").style.borderColor = app_colors.transparent;
+    $w("#boxItemRepeaterPosto").style.borderColor = APP_COLORS.transparent;
     set_sections (SECTION_STATE_LOADING);
 
     // catch and treat 'bomba' information
@@ -93,7 +93,7 @@ async function get_bomba_suggestion() {
     $w("#repeaterBombas").data = possible_bombas;
 
     if (possible_bombas.length == 1){
-        $w("#boxItemRepeaterPosto").style.borderColor = app_colors.main;
+        $w("#boxItemRepeaterPosto").style.borderColor = APP_COLORS.main;
         save_to_local_storage(possible_bombas[0].codBomba);
     }
 

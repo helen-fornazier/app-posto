@@ -9,8 +9,7 @@ import {
     utils_fmt_saldo,
     utils_onclick_show_hide_saldo,
     utils_config_items,
-    hist_filters,
-    g_hist_map,
+    utils_g_hist_map,
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
     SECTION_STATE_NO_DATA,
@@ -20,6 +19,7 @@ let saldo_total = JSON.parse(wixStorage.local.getItem('saldo_total'));
 
 const hist_filter_transaction = ["cashback", "pagamento"];
 const hist_filter_period = {"semana": 7, "quinzena": 15, "mes": 30, "trimestre": 90};
+const hist_filters = {"date": "#dropdownFilterDate", "transaction": "#dropdownFilterTransaction"};
 let history;
 
 
@@ -32,7 +32,7 @@ function set_filter(_filter, hist) {
     const filter_transaction = _filter["transaction"]
 
     $w("#repeaterHist").onItemReady( ($item, itemData, index) => {
-        utils_config_items($item, g_hist_map, itemData);
+        utils_config_items($item, utils_g_hist_map, itemData);
         utils_set_sections_history(SECTION_STATE_DATA);
     });
 
