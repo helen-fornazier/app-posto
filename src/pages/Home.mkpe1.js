@@ -22,7 +22,7 @@ import {
     be_mod_utils_check_have_pending_transactions,
 } from "backend/be_mod_utils";
 
-let saldo;
+let g_saldo;
 
 
 async function fill_member_data() {
@@ -56,7 +56,7 @@ async function search_client_on_databases() {
 async function save_saldo() {
     let saldo_total = await utils_get_saldo();
     wixStorage.local.setItem('saldo_total', JSON.stringify(saldo_total));
-    saldo = JSON.parse(wixStorage.local.getItem('saldo_total'));
+    g_saldo = JSON.parse(wixStorage.local.getItem('saldo_total'));
 }
 
 
@@ -69,7 +69,7 @@ $w.onReady(function () {
 	fill_member_data();
     save_saldo();
 
-    $w("#buttonHideShowAmount").onClick(() => utils_onclick_show_hide_saldo(saldo));
+    $w("#buttonHideShowAmount").onClick(() => utils_onclick_show_hide_saldo(g_saldo));
 
     // Escreva seu código JavaScript aqui usando o API de framework do Velo
 
