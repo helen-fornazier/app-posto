@@ -50,20 +50,19 @@ function approve_wait() {
     let elapsed_time = 0; // Tempo total transcorrido
     console.log("AGUARDANDO APROVAÇÃO...");
 
-    wait_change = setInterval(() => {
-        be_mod_utils_get_transaction_detail(transaction_id)
-        .then((result) => {
-            if (result.situacao == TRANSACAO_APROVADA){
-                console.log("TRANSACAO APROVADA");
-                set_sections(SECTION_STATE_DATA);
-                stop_wait_change();
-            } else if (result.situacao == TRANSACAO_RECUSADA){
-                console.log("TRANSACAO RECUSADA");
-                $w("#textOperacaoCancelada").text = "Operação cancelada"
-                set_sections(SECTION_STATE_NO_DATA);
-                stop_wait_change();
-            }
-        });
+    wait_change = setInterval(async() => {
+        let transacao = await be_mod_utils_get_transaction_detail(transaction_id);
+
+        if (transacao.situacao == TRANSACAO_APROVADA){
+            console.log("TRANSACAO APROVADA");
+            set_sections(SECTION_STATE_DATA);
+            stop_wait_change();
+        } else if (transacao.situacao == TRANSACAO_RECUSADA){
+            console.log("TRANSACAO RECUSADA");
+            $w("#textOperacaoCancelada").text = "Operação cancelada"
+            set_sections(SECTION_STATE_NO_DATA);
+            stop_wait_change();
+        }
         elapsed_time += update_interval;
         if (elapsed_time >= time_limit) {
             console.log("TRANSACAO EXPIRADA");
