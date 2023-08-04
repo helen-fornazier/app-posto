@@ -75,11 +75,8 @@ export async function be_utils_get_pending_transactions(transaction_status) {
     let transacoes = await wixData.query(BD_TRANSACOES)
                             .eq("situacao", transaction_status)
                             .find({suppressAuth: true})
-                            .then((results) => {
-                                return results["items"];
-                            });
-    
-    let transacoes_infos = await Promise.all(transacoes.map(async (transacao) => {
+
+    let transacoes_infos = await Promise.all(transacoes["items"].map(async (transacao) => {
         let cliente_nome = await be_utils_get_client_name(transacao.clienteId);
         return {
             "_id": transacao._id,
@@ -95,12 +92,9 @@ export async function be_utils_get_pending_transactions(transaction_status) {
 }
 
 export async function be_utils_get_transaction_detail(transaction_id) {
-    let transacao = await wixData.query(BD_TRANSACOES)
+    let transacao = (await wixData.query(BD_TRANSACOES)
         .eq("_id", transaction_id)
-        .find({suppressAuth: true})
-        .then((results) => {
-            return results["items"][0];
-    })
+        .find({suppressAuth: true}))["items"][0];
 
     let selected_transaction_information = {
         _id: transacao._id,
