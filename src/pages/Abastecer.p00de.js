@@ -17,10 +17,10 @@ let g_abastecer = [
     {ui: "#dropdownAbastecerTipoCombustivel", onChange: save_values_abastecer}
 ];
 
-let map_abastecer = {"tipo_combustivel": "#dropdownAbastecerTipoCombustivel", "valor": "#inputAbastecerValue"};
-let abastecer_values = {};
+let g_map_abastecer = {"tipo_combustivel": "#dropdownAbastecerTipoCombustivel", "valor": "#inputAbastecerValue"};
+let g_abastecer_values = {};
 
-const min_value_abastecimento = 500; // value in cents
+const g_min_value_abastecimento = 500; // value in cents
 
 
 function onclick_value_op(event, val) {
@@ -34,12 +34,12 @@ function onInput_value(event) {
 }
 
 function save_values_abastecer() {
-    abastecer_values = utils_get_elements_values(map_abastecer);
-    let valor = parseInt(utils_fmt_strip_non_digits(abastecer_values.valor));
-    if (valor >= min_value_abastecimento){
+    g_abastecer_values = utils_get_elements_values(g_map_abastecer);
+    let valor = parseInt(utils_fmt_strip_non_digits(g_abastecer_values.valor));
+    if (valor >= g_min_value_abastecimento){
         $w("#buttonAbastecerAvancar").enable();
         $w("#textAviso").hide();
-        wixStorage.local.setItem('abastecer_values', JSON.stringify(abastecer_values));
+        wixStorage.local.setItem('abastecer_values', JSON.stringify(g_abastecer_values));
     }
     else {
         $w("#textAviso").show();
@@ -49,9 +49,9 @@ function save_values_abastecer() {
 
 function render_values() {
     if (JSON.parse(wixStorage.local.getItem('abastecer_values'))) {
-        abastecer_values = JSON.parse(wixStorage.local.getItem('abastecer_values'));
-        $w("#inputAbastecerValue").value = abastecer_values.valor;
-        $w("#dropdownAbastecerTipoCombustivel").value = abastecer_values.tipo_combustivel;
+        g_abastecer_values = JSON.parse(wixStorage.local.getItem('abastecer_values'));
+        $w("#inputAbastecerValue").value = g_abastecer_values.valor;
+        $w("#dropdownAbastecerTipoCombustivel").value = g_abastecer_values.tipo_combustivel;
         $w("#buttonAbastecerAvancar").enable();
     }
 }
