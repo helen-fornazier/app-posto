@@ -246,9 +246,7 @@ export async function utils_get_member() {
 
 export async function  utils_get_saldo() {
 	let member = await currentMember.getMember({fieldsets: [ 'FULL' ]});
-	let saldo = await be_mod_utils_get_saldo(member._id);
-
-	return saldo;
+	return await be_mod_utils_get_saldo(member._id);
 }
 
 export function utils_onclick_show_hide_saldo(saldo_total) {
