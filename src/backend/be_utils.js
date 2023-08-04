@@ -188,10 +188,8 @@ export async function be_utils_check_is_funcionario(funcionario_email) {
     let funcionarios = await wixData.query(BD_FUNCIONARIOS)
                             .eq("email", funcionario_email)
                             .find({suppressAuth: true})
-                            .then((results) => {
-                                return results["items"];
-                            });
-    let is_funcionario = funcionarios["length"] ? true : false;
+    
+    let is_funcionario = funcionarios["items"]["length"] ? true : false;
     return is_funcionario;
 }
 
