@@ -243,8 +243,7 @@ export function utils_get_elements_values(map_elements) {
 }
 
 export async function utils_get_member() {
-	let member = await currentMember.getMember({fieldsets: [ 'FULL' ]});
-	return member;
+	return await currentMember.getMember({fieldsets: [ 'FULL' ]});
 }
 
 export async function  utils_get_saldo() {
