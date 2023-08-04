@@ -170,11 +170,11 @@ export function utils_config_items($w, config, data) {
 
 		if (item.format && $w(k).onInput) {
 			$w(k).onInput( (event) => {
-				if (event.target.value){
-					$w(k)[type] = item.format(event.target.value);
-					if (event.target.value && item.onInput) {
-						item.onInput(event, val)
-					}
+				if(!event.target.value)
+					return
+				$w(k)[type] = item.format(event.target.value);
+				if (event.target.value && item.onInput) {
+					item.onInput(event, val)
 				}
 			});
 		}
