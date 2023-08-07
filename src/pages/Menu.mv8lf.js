@@ -9,7 +9,6 @@ import {
 
 
 let g_menu = [
-    {ui: "#boxSupport", onClick: onclick_support},
     {ui: "#boxProfile", onClick: onclick_profile},
     {ui: "#boxLogout", onClick: onclick_logout},
 ];
@@ -17,10 +16,6 @@ let g_menu = [
 
 function onclick_profile(event) {
     wixLocation.to("/my-account");
-}
-
-function onclick_support(event) {
-
 }
 
 export function onclick_logout(event) {

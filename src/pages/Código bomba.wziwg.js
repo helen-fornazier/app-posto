@@ -9,7 +9,7 @@ import { utils_config_items,
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
     SECTION_STATE_NO_DATA,
-    app_colors,
+    APP_COLORS,
 } from "public/utils";
 
 import {
@@ -32,7 +32,11 @@ let g_bombas_map = [
     {ui: "#boxItemRepeaterPosto", onClick: onclick_bomba_selected}
 ];
 
-const map_bombas = {"bomba1": "#inputCodBomba1", "bomba2": "#inputCodBomba2", "bomba3": "#inputCodBomba3", "bomba4": "#inputCodBomba4", "bomba5": "#inputCodBomba5"};
+const g_map_bombas = {"bomba1": "#inputCodBomba1", "bomba2": "#inputCodBomba2", "bomba3": "#inputCodBomba3", "bomba4": "#inputCodBomba4", "bomba5": "#inputCodBomba5"};
+
+const g_no_digits = "-----";
+
+let g_all_bombas = [];
 
 
 function set_sections(state) {
@@ -51,19 +55,29 @@ function onclick_bomba_selected(event) {
     let cod_bomba = $item("#textNomePosto").text.split(" - ")[0];
 
     Array.from(cod_bomba).forEach((char, index) => {
-        $w(map_bombas[`bomba${index + 1}`]).value = char;
+        $w(g_map_bombas[`bomba${index + 1}`]).value = char;
     });
 
     get_bomba_suggestion(); // to update the suggestions
     save_to_local_storage(cod_bomba);
 }
 
+function filter_possible_bombas(cod_bomba) {
+    if (cod_bomba == g_no_digits) 
+        return g_all_bombas;
+    return g_all_bombas.filter(bomba => {
+        return !Array.from(cod_bomba).some((char, i) => {
+            return char !== '-' && char !== bomba.codBomba[i];
+        });
+    });
+}
+
 async function get_bomba_suggestion() {
-    $w("#boxItemRepeaterPosto").style.borderColor = app_colors.transparent;
+    $w("#boxItemRepeaterPosto").style.borderColor = APP_COLORS.transparent;
     set_sections (SECTION_STATE_LOADING);
 
     // catch and treat 'bomba' information
-    let bomba_values = utils_get_elements_values(map_bombas);
+    let bomba_values = utils_get_elements_values(g_map_bombas);
     let cod_bomba = Object.values(bomba_values).map(val => val === '' ? '-' : val).join('');
 
     if (cod_bomba.includes('-')){
@@ -75,11 +89,11 @@ async function get_bomba_suggestion() {
         utils_config_items($item, g_bombas_map, itemData);
     });
 
-    let possible_bombas = await be_mod_utils_get_bombas_code(cod_bomba)
+    let possible_bombas = filter_possible_bombas(cod_bomba);
     $w("#repeaterBombas").data = possible_bombas;
 
     if (possible_bombas.length == 1){
-        $w("#boxItemRepeaterPosto").style.borderColor = app_colors.main;
+        $w("#boxItemRepeaterPosto").style.borderColor = APP_COLORS.main;
         save_to_local_storage(possible_bombas[0].codBomba);
     }
 
@@ -90,74 +104,62 @@ async function get_bomba_suggestion() {
 }
 
 function onInput_go_to_next_bomba_input(event) {
+    // This function gets the number of the input that is being typed based on its id (inputCodBomba1, inputCodBomba2, etc)
+    // and then, using an object that maps the number of the input to its id, it goes to the next input.
+    // The input name starts with '1', so the previous is the value less two, the current is the value less one and the next is the value.
     let input = event.target.id;
     let num_bomba = input.match(/\d+/g)[0];
-    switch (num_bomba) {
-        case "1":
-            $w("#inputCodBomba2").focus();
-            break;
-        case "2":
-            $w("#inputCodBomba3").focus();
-            break;
-        case "3":
-            $w("#inputCodBomba4").focus();
-            break;
-        case "4":
-            $w("#inputCodBomba5").focus();
-            break;
-        default:
-            break;
+    num_bomba = parseInt(num_bomba);
+    if (num_bomba == 5){
+        $w(g_codigo_bomba[(num_bomba-1)].ui).blur();  // necessary to activate onChange event (on prev inputs, when focus change onChange is called)
+        $w(g_codigo_bomba[(num_bomba-1)].ui).focus(); // after activate onChange, focus is returned to input
+        return 
     }
+    $w(g_codigo_bomba[num_bomba].ui).focus();
 }
 
 function onKeyPress_go_to_prev_bomba_input(event) {
     if (event.key == "Backspace"){
         let input = event.target.id;
         let num_bomba = input.match(/\d+/g)[0];
-        switch (num_bomba) {
-            case "2":
-                $w("#inputCodBomba1").focus();
-                break;
-            case "3":
-                $w("#inputCodBomba2").focus();
-                break;
-            case "4":
-                $w("#inputCodBomba3").focus();
-                break;
-            case "5":
-                $w("#inputCodBomba4").focus();
-                break;
-            default:
-                break;
-        }
+        num_bomba = parseInt(num_bomba);
+        if (num_bomba == 1)
+            return 
+        $w(g_codigo_bomba[(num_bomba-2)].ui).focus();
     }
 }
 
 async function save_to_local_storage(cod_bomba) {
-    be_mod_utils_get_bombas_code(cod_bomba).then((bomba_informations) => {
-        wixStorage.local.setItem('bomba_information', JSON.stringify(bomba_informations[0]));
-        $w("#buttonCodBombaAvancar").enable();
-    });
+    let bomba = filter_possible_bombas(cod_bomba);
+    wixStorage.local.setItem('bomba_information', JSON.stringify(bomba[0]));
+    $w("#buttonCodBombaAvancar").enable();
 }
 
 function render_values() {
     let cod_bomba = JSON.parse(wixStorage.local.getItem('bomba_information'))?.codBomba ?? "";
     if (cod_bomba) {
         Array.from(cod_bomba).forEach((char, index) => {
-            $w(map_bombas[`bomba${index + 1}`]).value = char;
+            $w(g_map_bombas[`bomba${index + 1}`]).value = char;
         });
         $w("#buttonCodBombaAvancar").enable();
+        $w("#inputCodBomba5").focus();
     }
     get_bomba_suggestion();
+}
+
+async function get_all_bombas() {
+    g_all_bombas = await be_mod_utils_get_bombas_code();
+    render_values();
 }
 
 $w.onReady(function () {
     // while the person is typing or not select a 'posto' yet, disable option 'Avancar'
     $w("#buttonCodBombaAvancar").disable();
+    get_all_bombas();
     $w("#inputCodBomba1").focus();
     set_sections (SECTION_STATE_LOADING);
     utils_config_items($w, g_codigo_bomba);
-    render_values();
+
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')

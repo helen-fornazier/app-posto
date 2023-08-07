@@ -22,7 +22,7 @@ import {
     be_mod_utils_check_have_pending_transactions,
 } from "backend/be_mod_utils";
 
-let saldo;
+let g_saldo;
 
 
 async function fill_member_data() {
@@ -37,7 +37,7 @@ async function fill_member_data() {
     utils_fmt_saldo();
 }
 
-async function query_database() {
+async function search_client_on_databases() {
     let member = (await utils_get_member());
     let is_funcionario = await be_mod_utils_check_is_funcionario(member.loginEmail);
     if (is_funcionario){
@@ -56,7 +56,7 @@ async function query_database() {
 async function save_saldo() {
     let saldo_total = await utils_get_saldo();
     wixStorage.local.setItem('saldo_total', JSON.stringify(saldo_total));
-    saldo = JSON.parse(wixStorage.local.getItem('saldo_total'));
+    g_saldo = JSON.parse(wixStorage.local.getItem('saldo_total'));
 }
 
 
@@ -64,12 +64,12 @@ $w.onReady(function () {
     wixStorage.local.clear();
     $w("#textSaldoEmConta").text = "";
     utils_set_sections_history(SECTION_STATE_LOADING);
-    query_database();
-    utils_load_history(true, "");
+    search_client_on_databases();
+    utils_load_history(true);
 	fill_member_data();
     save_saldo();
 
-    $w("#buttonHideShowAmount").onClick(() => utils_onclick_show_hide_saldo(saldo));
+    $w("#buttonHideShowAmount").onClick(() => utils_onclick_show_hide_saldo(g_saldo));
 
     // Escreva seu código JavaScript aqui usando o API de framework do Velo
 
