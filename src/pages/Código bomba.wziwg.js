@@ -104,12 +104,15 @@ async function get_bomba_suggestion() {
 }
 
 function onInput_go_to_next_bomba_input(event) {
+    // This function gets the number of the input that is being typed based on its id (inputCodBomba1, inputCodBomba2, etc)
+    // and then, using an object that maps the number of the input to its id, it goes to the next input.
+    // The input name starts with '1', so the previous is the value less two, the current is the value less one and the next is the value.
     let input = event.target.id;
     let num_bomba = input.match(/\d+/g)[0];
     num_bomba = parseInt(num_bomba);
     if (num_bomba == 5){
-        $w(g_codigo_bomba[(num_bomba-1)].ui).blur();
-        $w(g_codigo_bomba[(num_bomba-1)].ui).focus();
+        $w(g_codigo_bomba[(num_bomba-1)].ui).blur();  // necessary to activate onChange event (on prev inputs, when focus change onChange is called)
+        $w(g_codigo_bomba[(num_bomba-1)].ui).focus(); // after activate onChange, focus is returned to input
         return 
     }
     $w(g_codigo_bomba[num_bomba].ui).focus();
