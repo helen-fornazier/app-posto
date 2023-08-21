@@ -148,6 +148,48 @@ export async function be_utils_get_client_name(cliente_id) {
     return cliente_nome;
 }
 
+export async function be_utils_get_dashboard_data() {
+    let clients = await wixData.query(BD_CLIENTE).find({suppressAuth: true});
+    let transactions = await wixData.query(BD_TRANSACOES).eq("situacao", "aprovada").find({suppressAuth: true});
+
+    let clients_total = clients.length;
+
+    let total_abastecido_app =  transactions.items.reduce((total, item) => {
+                                    return total + item.valor;
+                                }, 0);
+
+    let average_abastecimento = (total_abastecido_app/100)/transactions.length;
+
+    let cashback_used = transactions.items.reduce((total, item) => {
+                            if (item.tipo == "cashback")
+                                return total + item.valorTipo;
+                            return total;
+                        }, 0);
+
+    let cashback_to_be_used =   clients.items.reduce((total, item) => {
+                                    return total + item.saldo;
+                                }, 0);
+
+    let total_paid =    transactions.items.reduce((total, item) => {
+                            if (item.tipo == "cashback") // if is casback the total paid is the total of the transaction
+                                return total + item.valor;
+                            if (item.valor == item.valorTipo) // if is not 'cashback', check if the transaction is paid with ALL 'saldo'
+                                return total;
+                            return total + (item.valor + item.valorTipo); // if is not 'cashback' and the transaction is not paid with ALL 'saldo', the total paid is the total of the transaction minus the 'saldo' used (that is already negative)
+                        }, 0);
+
+    let dashboard_data = {
+        clients_total: clients_total,
+        average_abastecimento: average_abastecimento.toFixed(2),
+        cashback_used: cashback_used,
+        cashback_to_be_used: cashback_to_be_used,
+        total_abastecido_app: total_abastecido_app,
+        total_paid: total_paid,
+    }
+
+    return dashboard_data;
+}
+
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {
