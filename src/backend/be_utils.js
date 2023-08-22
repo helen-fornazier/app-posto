@@ -190,6 +190,34 @@ export async function be_utils_get_dashboard_data() {
     return dashboard_data;
 }
 
+export async function be_utils_graph_movimento() {
+    let transactions = await wixData.query(BD_TRANSACOES).eq("situacao", "aprovada").find({suppressAuth: true});
+
+    let count = 0;
+    let count_transactions_for_days = [];
+    let selected_date = [format_day_to_compare(transactions.items[0]._createdDate), 1];
+    count_transactions_for_days.push(selected_date);
+
+    transactions.items.forEach(transaction => {
+        let transaction_date = format_day_to_compare(new Date(transaction._createdDate))
+        if (transaction_date == count_transactions_for_days[count][0]){
+            count_transactions_for_days[count][1] += 1;
+        }
+        else{
+            selected_date = [format_day_to_compare(transaction._createdDate), 1];
+            count_transactions_for_days.push(selected_date)
+            count++;
+        }
+    });
+
+    count_transactions_for_days.map((item, index) => {
+        let date = new Date(item[0]).getTime();
+        count_transactions_for_days[index][0] = date;
+    })
+
+    return count_transactions_for_days;
+}
+
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {
@@ -259,4 +287,12 @@ async function get_transaction_infos(transaction_id) {
         .find({suppressAuth: true}))["items"][0];
     
     return transacao;
+}
+
+function format_day_to_compare(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    return `${year}-${month}-${day}`
 }

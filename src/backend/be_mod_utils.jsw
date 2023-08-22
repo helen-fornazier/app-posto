@@ -13,6 +13,7 @@ import {
 	be_utils_check_have_pending_transactions,
 	be_utils_get_client_name,
 	be_utils_get_dashboard_data,
+	be_utils_graph_movimento,
 } from 'backend/be_utils.js';
 
 
@@ -70,4 +71,8 @@ export function be_mod_utils_get_client_name(cliente_id) {
 
 export function be_mod_utils_get_dashboard_data() {
 	return be_utils_get_dashboard_data();
+}
+
+export function be_mod_utils_graph_movimento() {
+	return be_utils_graph_movimento();
 }

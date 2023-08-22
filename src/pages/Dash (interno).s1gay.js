@@ -9,6 +9,7 @@ import {
 
 import {
     be_mod_utils_get_dashboard_data,
+    be_mod_utils_graph_movimento,
 } from "backend/be_mod_utils";
 
 
@@ -24,6 +25,12 @@ let g_dashboard_items = [
 
 async function get_dashboard_information() {
     utils_config_items($w, g_dashboard_items, await be_mod_utils_get_dashboard_data());
+    let data = await be_mod_utils_graph_movimento();
+    const serie = [{
+        name: "Movimento",
+        data: data,
+    }];
+    $w("#htmlMovimentoGrafico").postMessage(serie);
 }
 
 $w.onReady(function () {
