@@ -166,6 +166,12 @@ export function utils_config_items($w, config, data) {
 		if (item.onClick)
 			$w(k).onClick( (event) => { item.onClick(event, val) });
 
+		if (item.onMouseIn)
+			$w(k).onMouseIn( (event) => { item.onMouseIn(event, item.target ? item.target : "") });
+
+		if (item.onMouseOut)
+			$w(k).onMouseOut( (event) => { item.onMouseOut(event, item.target ? item.target : "") });
+
 		if (item.format && $w(k).onInput) {
 			$w(k).onInput( (event) => {
 				if(!event.target.value)

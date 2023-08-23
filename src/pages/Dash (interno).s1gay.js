@@ -22,6 +22,14 @@ let g_dashboard_items = [
     {ui: "#totalPago", type: "text", db: "total_paid", format: utils_fmt_money_with_prefix},
 ];
 
+let g_dashboard_infos = [
+    {ui: "#vectorImageInfoTotalClientes", target: "#boxInfoTotalClientes", onMouseIn: onMouseIn_show_info, onMouseOut: onMouseOut_hide_info},
+    {ui: "#vectorImageInfoMediaAbast", target: "#boxinfoMediaAbastec", onMouseIn: onMouseIn_show_info, onMouseOut: onMouseOut_hide_info},
+    {ui: "#vectorImageInfoGraphMovimento", target: "#boxInfoGraphMoviment", onMouseIn: onMouseIn_show_info, onMouseOut: onMouseOut_hide_info},
+    {ui: "#vectorImageInfoOperacoesApp", target: "#boxInfoOperacoesApp", onMouseIn: onMouseIn_show_info, onMouseOut: onMouseOut_hide_info},
+    {ui: "#vectorImageInfoCashback", target: "#boxInfoCashback", onMouseIn: onMouseIn_show_info, onMouseOut: onMouseOut_hide_info},
+]
+
 
 async function get_dashboard_information() {
     utils_config_items($w, g_dashboard_items, await be_mod_utils_get_dashboard_data());
@@ -33,7 +41,16 @@ async function get_dashboard_information() {
     $w("#htmlMovimentoGrafico").postMessage(serie);
 }
 
+function onMouseIn_show_info(event, target) {
+    $w(target).show();
+}
+
+function onMouseOut_hide_info(event, target) {
+    $w(target).hide();
+}
+
 $w.onReady(function () {
+    utils_config_items($w, g_dashboard_infos);
     get_dashboard_information();
     // Write your JavaScript here
 
