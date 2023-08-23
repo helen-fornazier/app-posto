@@ -161,7 +161,7 @@ export async function be_utils_get_dashboard_data() {
     let average_abastecimento = (total_abastecido_app/100)/transactions.length;
 
     let cashback_used = transactions.items.reduce((total, item) => {
-                            if (item.tipo == "cashback")
+                            if (item.tipo == "pagamento_saldo")
                                 return total + item.valorTipo;
                             return total;
                         }, 0);
@@ -173,7 +173,7 @@ export async function be_utils_get_dashboard_data() {
     let total_paid =    transactions.items.reduce((total, item) => {
                             if (item.tipo == "cashback") // if is casback the total paid is the total of the transaction
                                 return total + item.valor;
-                            if (item.valor == item.valorTipo) // if is not 'cashback', check if the transaction is paid with ALL 'saldo'
+                            if (item.valor + item.valorTipo == 0) // if is not 'cashback', check if the transaction is paid with ALL 'saldo'
                                 return total;
                             return total + (item.valor + item.valorTipo); // if is not 'cashback' and the transaction is not paid with ALL 'saldo', the total paid is the total of the transaction minus the 'saldo' used (that is already negative)
                         }, 0);
@@ -181,7 +181,7 @@ export async function be_utils_get_dashboard_data() {
     let dashboard_data = {
         clients_total: clients_total,
         average_abastecimento: average_abastecimento.toFixed(2),
-        cashback_used: cashback_used,
+        cashback_used: cashback_used * -1,
         cashback_to_be_used: cashback_to_be_used,
         total_abastecido_app: total_abastecido_app,
         total_paid: total_paid,
