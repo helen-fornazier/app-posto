@@ -40,7 +40,6 @@ let fadeOptions = {
 
 async function get_dashboard_information() {
     utils_config_items($w, g_dashboard_items, await be_mod_utils_get_dashboard_data());
-    load_graph_movimento();
 }
 
 async function load_graph_movimento() {
@@ -62,7 +61,8 @@ function onMouseOut_hide_info(event, target) {
 
 $w.onReady(function () {
     utils_config_items($w, g_dashboard_infos);
-    get_dashboard_information();
+    setInterval(get_dashboard_information, 5000);
+    load_graph_movimento();
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')
