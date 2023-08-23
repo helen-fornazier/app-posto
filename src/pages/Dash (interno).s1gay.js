@@ -30,6 +30,10 @@ let g_dashboard_infos = [
     {ui: "#vectorImageInfoCashback", target: "#boxInfoCashback", onMouseIn: onMouseIn_show_info, onMouseOut: onMouseOut_hide_info},
 ]
 
+let fadeOptions = {
+    "duration":   300,
+};
+
 
 async function get_dashboard_information() {
     utils_config_items($w, g_dashboard_items, await be_mod_utils_get_dashboard_data());
@@ -42,7 +46,7 @@ async function get_dashboard_information() {
 }
 
 function onMouseIn_show_info(event, target) {
-    $w(target).show();
+    $w(target).show("fade", fadeOptions);
 }
 
 function onMouseOut_hide_info(event, target) {
