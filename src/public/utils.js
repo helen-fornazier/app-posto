@@ -1,4 +1,5 @@
 import { currentMember } from 'wix-members';
+import { authentication } from 'wix-members';
 import { be_mod_utils_get_history, be_mod_utils_get_saldo } from "backend/be_mod_utils";
 
 const IMG_PAGAMENTO_SALDO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
@@ -262,6 +263,10 @@ export function utils_onclick_show_hide_saldo(saldo_total) {
 		$w("#textSaldoEmConta").text = HIDE_AMOUNT;
 }
 
+export function utils_onclick_logout(event) {
+	console.log("logout");
+    authentication.logout();
+}
 
 // -------------- internal functions --------------------
 function apply_mask(mask, val) {

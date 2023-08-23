@@ -5,6 +5,7 @@
 import {
     utils_config_items,
     utils_fmt_money_with_prefix,
+    utils_onclick_logout,
 } from "public/utils";
 
 import {
@@ -20,6 +21,7 @@ let g_dashboard_items = [
     {ui: "#cashbackASerUsado", type: "text", db: "cashback_to_be_used", format: utils_fmt_money_with_prefix},
     {ui: "#totalAbastecidoPeloApp", type: "text", db: "total_abastecido_app", format: utils_fmt_money_with_prefix},
     {ui: "#totalPago", type: "text", db: "total_paid", format: utils_fmt_money_with_prefix},
+    {ui: "#buttonLogout", type: "button", onClick: utils_onclick_logout},
 ];
 
 let g_dashboard_infos = [

@@ -7,6 +7,7 @@ import {
     utils_config_items,
     utils_fmt_money_with_prefix,
     utils_show_hide_section,
+    utils_onclick_logout,
     TRANSACAO_PENDENTE,
     TRANSACAO_EXPIRADA,
     SECTION_STATE_LOADING,
@@ -105,6 +106,7 @@ $w.onReady(function () {
     set_sections(SECTION_STATE_LOADING);
     load_pending_transactions();
     setInterval(load_pending_transactions, 5000);
+    $w("#buttonLogout").onClick(utils_onclick_logout);
     // Write your JavaScript here
 
     // To select an element by ID use: $w('#elementID')

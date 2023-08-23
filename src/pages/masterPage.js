@@ -7,4 +7,8 @@ $w.onReady(function () {
         console.log("onLogin");
         wixLocation.to(wixLocation.url); // reactivate the router
     });
+    authentication.onLogout( () => {
+        console.log("onLogout");
+        wixLocation.to("/acesso");
+    });
 });
