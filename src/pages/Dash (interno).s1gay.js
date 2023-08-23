@@ -22,6 +22,7 @@ let g_dashboard_items = [
     {ui: "#totalAbastecidoPeloApp", type: "text", db: "total_abastecido_app", format: utils_fmt_money_with_prefix},
     {ui: "#totalPago", type: "text", db: "total_paid", format: utils_fmt_money_with_prefix},
     {ui: "#buttonLogout", type: "button", onClick: utils_onclick_logout},
+    {ui: "#buttonUpdateGraphMoviment", type: "button", onClick: load_graph_movimento},
 ];
 
 let g_dashboard_infos = [
@@ -39,6 +40,10 @@ let fadeOptions = {
 
 async function get_dashboard_information() {
     utils_config_items($w, g_dashboard_items, await be_mod_utils_get_dashboard_data());
+    load_graph_movimento();
+}
+
+async function load_graph_movimento() {
     let data = await be_mod_utils_graph_movimento();
     const serie = [{
         name: "Movimento",
