@@ -149,39 +149,41 @@ export async function be_utils_get_client_name(cliente_id) {
 }
 
 export async function be_utils_get_dashboard_data() {
-    let clients = await wixData.query(BD_CLIENTE).find({suppressAuth: true});
-    let transactions = await wixData.query(BD_TRANSACOES).eq("situacao", "aprovada").find({suppressAuth: true});
+    let clients_query = wixData.aggregate(BD_CLIENTE)
+    let transactions_query = wixData.aggregate(BD_TRANSACOES)
 
-    let clients_total = clients.length;
+    let filter = wixData.filter().eq("situacao", "aprovada");
+    let filter_cashback_used = wixData.filter().eq("situacao", "aprovada").eq("tipo", "pagamento_saldo");
 
-    let total_abastecido_app =  transactions.items.reduce((total, item) => {
-                                    return total + item.valor;
-                                }, 0);
+    let clients_count = (await clients_query
+                        .count()
+                        .run()).items[0].count;
 
-    let average_abastecimento = (total_abastecido_app/100)/transactions.length;
+    let total_abastecido_app = (await transactions_query
+                        .filter(filter)
+                        .sum("valor")
+                        .run()).items[0].valorSum;
 
-    let cashback_used = transactions.items.reduce((total, item) => {
-                            if (item.tipo == "pagamento_saldo")
-                                return total + item.valorTipo;
-                            return total;
-                        }, 0);
+    let average_abastecimento = (await transactions_query
+                        .filter(filter)
+                        .avg("valor")
+                        .run()).items[0].valorAvg / 100;
 
-    let cashback_to_be_used =   clients.items.reduce((total, item) => {
-                                    return total + item.saldo;
-                                }, 0);
+    let cashback_used = (await transactions_query
+                        .filter(filter_cashback_used)
+                        .sum("valorTipo")
+                        .run()).items[0].valorTipoSum * -1;
 
-    let total_paid =    transactions.items.reduce((total, item) => {
-                            if (item.tipo == "cashback") // if is casback the total paid is the total of the transaction
-                                return total + item.valor;
-                            if (item.valor + item.valorTipo == 0) // if is not 'cashback', check if the transaction is paid with ALL 'saldo'
-                                return total;
-                            return total + (item.valor + item.valorTipo); // if is not 'cashback' and the transaction is not paid with ALL 'saldo', the total paid is the total of the transaction minus the 'saldo' used (that is already negative)
-                        }, 0);
+    let cashback_to_be_used = (await clients_query
+                        .sum("saldo")
+                        .run()).items[0].saldoSum;
+
+    let total_paid = total_abastecido_app - cashback_used;
 
     let dashboard_data = {
-        clients_total: clients_total,
+        clients_total: clients_count,
         average_abastecimento: average_abastecimento.toFixed(2),
-        cashback_used: cashback_used * -1,
+        cashback_used: cashback_used,
         cashback_to_be_used: cashback_to_be_used,
         total_abastecido_app: total_abastecido_app,
         total_paid: total_paid,
@@ -191,14 +193,31 @@ export async function be_utils_get_dashboard_data() {
 }
 
 export async function be_utils_graph_movimento() {
-    let transactions = await wixData.query(BD_TRANSACOES).eq("situacao", "aprovada").find({suppressAuth: true});
+    const pageSize = 50;
+    let transactions = [];
+    let currentPage = 1;
+
+    while (true) {
+        const result = await wixData.query(BD_TRANSACOES)
+            .limit(pageSize)
+            .skip((currentPage - 1) * pageSize)
+            .eq("situacao", "aprovada")
+            .find();
+
+        if (result.items.length === 0) {
+            break;
+        }
+
+        transactions.push(...result.items);
+        currentPage++;
+    }
 
     let count = 0;
     let count_transactions_for_days = [];
-    let selected_date = [format_day_to_compare(transactions.items[0]._createdDate), 1];
+    let selected_date = [format_day_to_compare(transactions[0]._createdDate), 1];
     count_transactions_for_days.push(selected_date);
 
-    transactions.items.forEach(transaction => {
+    transactions.forEach(transaction => {
         let transaction_date = format_day_to_compare(new Date(transaction._createdDate))
         if (transaction_date == count_transactions_for_days[count][0]){
             count_transactions_for_days[count][1] += 1;
