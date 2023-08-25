@@ -61,7 +61,7 @@ function onMouseOut_hide_info(event, target) {
 
 $w.onReady(function () {
     utils_config_items($w, g_dashboard_infos);
-    setInterval(get_dashboard_information, 5000);
+    get_dashboard_information();
     load_graph_movimento();
     // Write your JavaScript here
 
