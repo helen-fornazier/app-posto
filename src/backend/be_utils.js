@@ -155,28 +155,41 @@ export async function be_utils_get_dashboard_data() {
     let filter = wixData.filter().eq("situacao", "aprovada");
     let filter_cashback_used = wixData.filter().eq("situacao", "aprovada").eq("tipo", "pagamento_saldo");
 
-    let clients_count = (await clients_query
-                        .count()
-                        .run()).items[0].count;
-
-    let total_abastecido_app = (await transactions_query
-                        .filter(filter)
-                        .sum("valor")
-                        .run()).items[0].valorSum;
-
-    let average_abastecimento = (await transactions_query
-                        .filter(filter)
-                        .avg("valor")
-                        .run()).items[0].valorAvg / 100;
-
-    let cashback_used = (await transactions_query
-                        .filter(filter_cashback_used)
-                        .sum("valorTipo")
-                        .run()).items[0].valorTipoSum * -1;
-
-    let cashback_to_be_used = (await clients_query
-                        .sum("saldo")
-                        .run()).items[0].saldoSum;
+    let [clients_count, total_abastecido_app, average_abastecimento, cashback_used, cashback_to_be_used] = await Promise.all([
+        clients_query
+            .count()
+            .run()
+            .then((results) => {
+                return results.items[0].count;
+            }),
+        transactions_query
+            .filter(filter)
+            .sum("valor")
+            .run()
+            .then((results) => {
+                return results.items[0].valorSum;
+            }),
+        transactions_query
+            .filter(filter)
+            .avg("valor")
+            .run()
+            .then((results) => {
+                return results.items[0].valorAvg / 100;
+            }),
+        transactions_query
+            .filter(filter_cashback_used)
+            .sum("valorTipo")
+            .run()
+            .then((results) => {
+                return -results.items[0].valorTipoSum
+            }),
+        clients_query
+            .sum("saldo")
+            .run()
+            .then((results) => {
+                return results.items[0].saldoSum
+            }),
+    ]);
 
     let total_paid = total_abastecido_app - cashback_used;
 
