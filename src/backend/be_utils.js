@@ -225,27 +225,15 @@ export async function be_utils_graph_movimento() {
         currentPage++;
     }
 
-    let count = 0;
-    let count_transactions_for_days = [];
-    let selected_date = [format_day_to_compare(transactions[0]._createdDate), 1];
-    count_transactions_for_days.push(selected_date);
-
     transactions.forEach(transaction => {
-        let transaction_date = format_day_to_compare(new Date(transaction._createdDate))
-        if (transaction_date == count_transactions_for_days[count][0]){
-            count_transactions_for_days[count][1] += 1;
-        }
-        else{
-            selected_date = [format_day_to_compare(transaction._createdDate), 1];
-            count_transactions_for_days.push(selected_date)
-            count++;
-        }
+        transaction.date = format_day_to_compare(new Date(transaction._createdDate))
     });
 
-    count_transactions_for_days.map((item, index) => {
-        let date = new Date(item[0]).getTime();
-        count_transactions_for_days[index][0] = date;
-    })
+    let list_days_transactions = [...new Set(transactions.map(transaction => transaction.date))];
+    let count_transactions_for_days = list_days_transactions.map(transaction_date => [
+        transaction_date,
+        transactions.filter(transaction => transaction.date === transaction_date).length
+    ]);
 
     return count_transactions_for_days;
 }
