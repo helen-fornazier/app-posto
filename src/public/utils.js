@@ -1,4 +1,5 @@
 import { currentMember } from 'wix-members';
+import { authentication } from 'wix-members';
 import { be_mod_utils_get_history, be_mod_utils_get_saldo } from "backend/be_mod_utils";
 
 const IMG_PAGAMENTO_SALDO = "https://static.wixstatic.com/media/88a711_9162dc18460547c794940a110eae3acd~mv2.png";
@@ -166,6 +167,12 @@ export function utils_config_items($w, config, data) {
 		if (item.onClick)
 			$w(k).onClick( (event) => { item.onClick(event, val) });
 
+		if (item.onMouseIn)
+			$w(k).onMouseIn( (event) => { item.onMouseIn(event, item.target ? item.target : "") });
+
+		if (item.onMouseOut)
+			$w(k).onMouseOut( (event) => { item.onMouseOut(event, item.target ? item.target : "") });
+
 		if (item.format && $w(k).onInput) {
 			$w(k).onInput( (event) => {
 				if(!event.target.value)
@@ -256,6 +263,10 @@ export function utils_onclick_show_hide_saldo(saldo_total) {
 		$w("#textSaldoEmConta").text = HIDE_AMOUNT;
 }
 
+export function utils_onclick_logout(event) {
+	console.log("logout");
+    authentication.logout();
+}
 
 // -------------- internal functions --------------------
 function apply_mask(mask, val) {

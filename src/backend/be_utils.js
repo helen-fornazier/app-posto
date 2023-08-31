@@ -148,6 +148,96 @@ export async function be_utils_get_client_name(cliente_id) {
     return cliente_nome;
 }
 
+export async function be_utils_get_dashboard_data() {
+    let clients_query = wixData.aggregate(BD_CLIENTE)
+    let transactions_query = wixData.aggregate(BD_TRANSACOES)
+
+    let filter = wixData.filter().eq("situacao", "aprovada");
+    let filter_cashback_used = wixData.filter().eq("situacao", "aprovada").eq("tipo", "pagamento_saldo");
+
+    let [clients_count, total_abastecido_app, average_abastecimento, cashback_used, cashback_to_be_used] = await Promise.all([
+        clients_query
+            .count()
+            .run()
+            .then((results) => {
+                return results.items[0].count;
+            }),
+        transactions_query
+            .filter(filter)
+            .sum("valor")
+            .run()
+            .then((results) => {
+                return results.items[0].valorSum;
+            }),
+        transactions_query
+            .filter(filter)
+            .avg("valor")
+            .run()
+            .then((results) => {
+                return results.items[0].valorAvg / 100;
+            }),
+        transactions_query
+            .filter(filter_cashback_used)
+            .sum("valorTipo")
+            .run()
+            .then((results) => {
+                return -results.items[0].valorTipoSum
+            }),
+        clients_query
+            .sum("saldo")
+            .run()
+            .then((results) => {
+                return results.items[0].saldoSum
+            }),
+    ]);
+
+    let total_paid = total_abastecido_app - cashback_used;
+
+    let dashboard_data = {
+        clients_total: clients_count,
+        average_abastecimento: average_abastecimento.toFixed(2),
+        cashback_used: cashback_used,
+        cashback_to_be_used: cashback_to_be_used,
+        total_abastecido_app: total_abastecido_app,
+        total_paid: total_paid,
+    }
+
+    return dashboard_data;
+}
+
+export async function be_utils_graph_movimento() {
+    const pageSize = 50;
+    let transactions = [];
+    let currentPage = 1;
+
+    while (true) {
+        const result = await wixData.query(BD_TRANSACOES)
+            .limit(pageSize)
+            .skip((currentPage - 1) * pageSize)
+            .eq("situacao", "aprovada")
+            .find();
+
+        if (result.items.length === 0) {
+            break;
+        }
+
+        transactions.push(...result.items);
+        currentPage++;
+    }
+
+    transactions.forEach(transaction => {
+        transaction.date = format_day_to_compare(new Date(transaction._createdDate))
+    });
+
+    let list_days_transactions = [...new Set(transactions.map(transaction => transaction.date))];
+    let count_transactions_for_days = list_days_transactions.map(transaction_date => [
+        transaction_date,
+        transactions.filter(transaction => transaction.date === transaction_date).length
+    ]);
+
+    return count_transactions_for_days;
+}
+
 
 // -------------- database insert functions --------------------
 export async function be_utils_cadastrar_transacao(transacao) {
@@ -217,4 +307,12 @@ async function get_transaction_infos(transaction_id) {
         .find({suppressAuth: true}))["items"][0];
     
     return transacao;
+}
+
+function format_day_to_compare(date) {
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    return `${year}-${month}-${day}`
 }
