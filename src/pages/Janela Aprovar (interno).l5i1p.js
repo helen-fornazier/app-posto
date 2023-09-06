@@ -14,7 +14,7 @@ import {
 let receivedData = wixWindowFrontend.lightbox.getContext();
 
 let g_detalhes_transacao = [
-    {ui: "#inputName", db: "nome", type:"value"},
+    {ui: "#inputName", db: "client_name", type:"value"},
     {ui: "#inputTipoCombustivel", db: "tipo_combustivel", type: "value"},
     {ui: "#inputCodBomba", db: "cod_bomba", type: "value"},
     {ui: "#inputDate", db: "data", type: "value", format: utils_fmt_date},

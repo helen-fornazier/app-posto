@@ -4,8 +4,8 @@ import {
 	be_utils_cadastrar_transacao,
 	be_utils_get_saldo,
 	be_utils_cadastrar_cliente,
-	be_utils_get_pending_transactions,
-	be_utils_get_transaction_detail,
+	be_utils_get_transactions_by_status,
+	be_utils_get_transaction_status,
 	be_utils_update_transaction,
 	be_utils_update_client_saldo,
 	be_utils_check_is_funcionario,
@@ -37,12 +37,12 @@ export function be_mod_utils_cadastrar_cliente(cliente) {
 	return be_utils_cadastrar_cliente(cliente);
 }
 
-export function be_mod_utils_get_pending_transactions(transaction_status) {
-	return be_utils_get_pending_transactions(transaction_status);
+export function be_mod_utils_get_transactions_by_status(transaction_status) {
+	return be_utils_get_transactions_by_status(transaction_status);
 }
 
-export function be_mod_utils_get_transaction_detail (transaction_id) {
-	return be_utils_get_transaction_detail(transaction_id);
+export function be_mod_utils_get_transaction_status (transaction_id) {
+	return be_utils_get_transaction_status(transaction_id);
 }
 
 export function be_mod_utils_update_transaction(transaction_id, transaction_status) {
