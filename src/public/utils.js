@@ -41,6 +41,8 @@ export const APP_COLORS = {
 
 export const HIDE_AMOUNT = "****";
 
+export const POSTO_SANTA_TEREZA_ID = "a521f40d-7e65-4222-a53f-5e67c7b59190";
+
 // -------------- fmt functions --------------------
 export function utils_fmt_money_with_prefix(value) {
 	value = utils_fmt_money(value);
