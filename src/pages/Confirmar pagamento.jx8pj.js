@@ -15,6 +15,7 @@ import {
     SECTION_STATE_LOADING,
     SECTION_STATE_DATA,
     TRANSACAO_PENDENTE,
+    POSTO_SANTA_TEREZA_ID,
 } from "public/utils";
 
 import {
@@ -31,8 +32,8 @@ let g_valor_abastecimento = parseInt(utils_fmt_strip_non_digits(g_abastecer_valu
 let g_tipo_combustivel = g_abastecer_values.tipo_combustivel;
 
 let g_bomba_information = JSON.parse(wixStorage.local.getItem('bomba_information'));
-let g_posto_id = g_bomba_information.postoId;
-let g_cod_bomba = g_bomba_information.codBomba;
+let g_posto_id = g_bomba_information?.postoId ?? POSTO_SANTA_TEREZA_ID;
+let g_cod_bomba = g_bomba_information?.codBomba ?? "-";
 
 let g_tipo_de_pagamento;
 

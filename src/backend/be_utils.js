@@ -71,7 +71,7 @@ export async function be_utils_get_saldo(cliente_id) {
     return saldo;
 }
 
-export async function be_utils_get_pending_transactions(transaction_status) {
+export async function be_utils_get_transactions_by_status(transaction_status) {
     let transacoes = await wixData.query(BD_TRANSACOES)
                             .eq("situacao", transaction_status)
                             .find({suppressAuth: true})
@@ -79,11 +79,17 @@ export async function be_utils_get_pending_transactions(transaction_status) {
     let transacoes_infos = await Promise.all(transacoes["items"].map(async (transacao) => {
         let cliente_nome = await be_utils_get_client_name(transacao.clienteId);
         return {
-            "_id": transacao._id,
-            "client_name": cliente_nome,
-            "cod_bomba": transacao.codBomba,
-            "data": transacao._createdDate,
-            "valor_a_pagar": transacao.tipo == "cashback" ? transacao.valor : transacao.valor + transacao.valorTipo,
+            _id: transacao._id,
+            client_name: cliente_nome,
+            cod_bomba: transacao.codBomba,
+            data: transacao._createdDate,
+            valor_a_pagar: transacao.tipo == "cashback" ? transacao.valor : transacao.valor + transacao.valorTipo,
+            tipo_combustivel: transacao.tipoCombustivel,
+            valor: transacao.valor,
+            is_cashback: transacao.tipo == "cashback" ? true : false,
+            saldo_usado: transacao.tipo == "cashback" ? 0 : transacao.valorTipo,
+            situacao: transacao.situacao,
+            cliente_id: transacao.clienteId,
         };
     }));
 
@@ -91,27 +97,12 @@ export async function be_utils_get_pending_transactions(transaction_status) {
     return transacoes_infos;
 }
 
-export async function be_utils_get_transaction_detail(transaction_id) {
+export async function be_utils_get_transaction_status(transaction_id) {
     let transacao = (await wixData.query(BD_TRANSACOES)
         .eq("_id", transaction_id)
         .find({suppressAuth: true}))["items"][0];
 
-    let selected_transaction_information = {
-        _id: transacao._id,
-        tipo_combustivel: transacao.tipoCombustivel,
-        cod_bomba: transacao.codBomba,
-        data: transacao._createdDate,
-        valor: transacao.valor,
-        is_cashback: transacao.tipo == "cashback" ? true : false,
-        saldo_usado: transacao.tipo == "cashback" ? 0 : transacao.valorTipo,
-        valor_a_pagar: transacao.tipo == "cashback" ? transacao.valor : transacao.valor + transacao.valorTipo,
-        situacao: transacao.situacao,
-        cliente_id: transacao.clienteId,
-    }
-
-    // return [{tipo_combustivel, cod_bomba, data, hora, valor, is_cashback, saldo_usado, valor_a_pagar}]
-
-    return selected_transaction_information;
+    return transacao.situacao;
 }
 
 export async function be_utils_get_posto_pct_cashback(posto_id) {

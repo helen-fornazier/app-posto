@@ -16,14 +16,12 @@ import {
 } from "public/utils";
 
 import {
-    be_mod_utils_get_pending_transactions,
-    be_mod_utils_get_transaction_detail,
+    be_mod_utils_get_transactions_by_status,
     be_mod_utils_update_transaction,
-    be_mod_utils_get_client_name,
 } from "backend/be_mod_utils";
 
 
-let g_transacoes_pendentes = [
+let g_map_transacoes_pendentes = [
     {ui: "#textClientName", type: "text", db: "client_name"},
     {ui: "#textCodBomba", type: "text", db: "cod_bomba", format: fmt_cod_bomba},
     {ui: "#textData", type: "text", db: "data", format: fmt_date_with_hour},
@@ -32,6 +30,8 @@ let g_transacoes_pendentes = [
 ];
 
 const g_max_hours_of_pending_transactions = 5; // time in hours
+
+let g_transacoes_pendentes;
 
 
 function fmt_cod_bomba(val) {
@@ -53,20 +53,20 @@ function fmt_date_with_hour(val) {
 
 async function onclick_ver_detalhes(event) {
     let id_transacao = event.context.itemId;
-    let transacao_info = await get_transaction_selected_information(id_transacao);
+    let transacao_info = g_transacoes_pendentes.find(transacao => transacao._id === id_transacao);
     wixWindow.openLightbox("Janela Aprovar (interno)", transacao_info);
 }
 
 async function load_pending_transactions() {
     $w("#repeaterTransacoesPendentes").onItemReady( ($item, itemData, index) => {
         set_sections(SECTION_STATE_DATA);
-        utils_config_items($item, g_transacoes_pendentes, itemData);
+        utils_config_items($item, g_map_transacoes_pendentes, itemData);
     });
 
-    let transacoes_pendentes = await be_mod_utils_get_pending_transactions(TRANSACAO_PENDENTE);
+    g_transacoes_pendentes = await be_mod_utils_get_transactions_by_status(TRANSACAO_PENDENTE);
 
     let now = new Date();
-    transacoes_pendentes = transacoes_pendentes.filter( (transacao) => {
+    g_transacoes_pendentes = g_transacoes_pendentes.filter( (transacao) => {
         let item_time = new Date(transacao.data);
         let time_diff = Math.abs((now.getTime() - item_time.getTime())/(1000*60*60));
 
@@ -76,18 +76,10 @@ async function load_pending_transactions() {
             return transacao;
     });
 
-    $w("#repeaterTransacoesPendentes").data = transacoes_pendentes;
+    $w("#repeaterTransacoesPendentes").data = g_transacoes_pendentes;
 
-    if (!transacoes_pendentes.length)
+    if (!g_transacoes_pendentes.length)
         set_sections(SECTION_STATE_NO_DATA);
-}
-
-async function get_transaction_selected_information(transaction_id) {
-    let transacao_detail = await be_mod_utils_get_transaction_detail(transaction_id);
-    let cliente_nome = await be_mod_utils_get_client_name(transacao_detail.cliente_id);
-    transacao_detail.nome = cliente_nome;
-
-    return transacao_detail;
 }
 
 function set_sections(state) {

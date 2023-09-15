@@ -16,7 +16,7 @@ import {
 } from "public/utils";
 
 import {
-    be_mod_utils_get_transaction_detail,
+    be_mod_utils_get_transaction_status,
     be_mod_utils_update_transaction,
 } from "backend/be_mod_utils";
 
@@ -51,13 +51,13 @@ function approve_wait() {
     console.log("AGUARDANDO APROVAÇÃO...");
 
     g_wait_change = setInterval(async() => {
-        let transacao = await be_mod_utils_get_transaction_detail(g_transaction_id);
+        let transacao_status = await be_mod_utils_get_transaction_status(g_transaction_id);
 
-        if (transacao.situacao == TRANSACAO_APROVADA){
+        if (transacao_status == TRANSACAO_APROVADA){
             console.log("TRANSACAO APROVADA");
             set_sections(SECTION_STATE_DATA);
             stop_wait_change();
-        } else if (transacao.situacao == TRANSACAO_RECUSADA){
+        } else if (transacao_status == TRANSACAO_RECUSADA){
             console.log("TRANSACAO RECUSADA");
             $w("#textOperacaoCancelada").text = "Operação cancelada"
             set_sections(SECTION_STATE_NO_DATA);
